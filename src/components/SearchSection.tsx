@@ -4,6 +4,18 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
 
+type ServiceType = 
+  | "advocacy"
+  | "employment_support"
+  | "education_training"
+  | "healthcare_services"
+  | "housing_assistance"
+  | "transportation"
+  | "counseling"
+  | "assistive_technology"
+  | "recreation_social"
+  | "legal_services";
+
 type Organization = {
   id: string;
   name: string;
@@ -11,15 +23,29 @@ type Organization = {
   website: string | null;
   phone: string | null;
   email: string | null;
+  is_national: boolean;
+  created_at: string;
+  updated_at: string;
+  organization_locations: { zip_code: string }[];
+  organization_services: { service_type: ServiceType }[];
+};
+
+type ProcessedOrganization = {
+  id: string;
+  name: string;
+  description: string;
+  website: string | null;
+  phone: string | null;
+  email: string | null;
   zip_code: string;
-  service_type: string;
+  service_type: ServiceType;
 };
 
 export const SearchSection = () => {
-  const [serviceType, setServiceType] = useState("");
+  const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [zipCode, setZipCode] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
   const [stats, setStats] = useState({
     zipCodes: 0,
     services: 0,
@@ -74,7 +100,22 @@ export const SearchSection = () => {
 
     const { data } = await query;
     
-    setOrganizations(data || []);
+    if (data) {
+      // Process the data to match our ProcessedOrganization type
+      const processedOrgs: ProcessedOrganization[] = data.map((org: Organization) => ({
+        id: org.id,
+        name: org.name,
+        description: org.description,
+        website: org.website,
+        phone: org.phone,
+        email: org.email,
+        zip_code: org.organization_locations[0]?.zip_code || '',
+        service_type: org.organization_services[0]?.service_type || 'advocacy',
+      }));
+      setOrganizations(processedOrgs);
+    } else {
+      setOrganizations([]);
+    }
     setHasSearched(true);
   };
 
@@ -112,7 +153,7 @@ export const SearchSection = () => {
         <select
           className="p-2 border rounded-md font-['Verdana']"
           value={serviceType}
-          onChange={(e) => setServiceType(e.target.value)}
+          onChange={(e) => setServiceType(e.target.value as ServiceType | "")}
         >
           <option value="">Select Service Type</option>
           <option value="advocacy">Advocacy</option>
