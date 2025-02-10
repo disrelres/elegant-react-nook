@@ -9,7 +9,103 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      organization_disabilities: {
+        Row: {
+          created_at: string
+          disability_type: Database["public"]["Enums"]["disability_type"]
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
+          disability_type: Database["public"]["Enums"]["disability_type"]
+          organization_id: string
+        }
+        Update: {
+          created_at?: string
+          disability_type?: Database["public"]["Enums"]["disability_type"]
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_disabilities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_locations: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          organization_id: string
+          state: string
+          zip_code: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          state: string
+          zip_code: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          state?: string
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_locations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          is_national: boolean
+          name: string
+          phone: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          email?: string | null
+          id?: string
+          is_national?: boolean
+          name: string
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          is_national?: boolean
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +114,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      disability_type:
+        | "mobility_impairment"
+        | "visual_impairment"
+        | "hearing_impairment"
+        | "cognitive_disability"
+        | "chronic_health_conditions"
     }
     CompositeTypes: {
       [_ in never]: never
