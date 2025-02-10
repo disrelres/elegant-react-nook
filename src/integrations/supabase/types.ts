@@ -70,6 +70,32 @@ export type Database = {
           },
         ]
       }
+      organization_services: {
+        Row: {
+          created_at: string
+          organization_id: string
+          service_type: Database["public"]["Enums"]["service_type"]
+        }
+        Insert: {
+          created_at?: string
+          organization_id: string
+          service_type: Database["public"]["Enums"]["service_type"]
+        }
+        Update: {
+          created_at?: string
+          organization_id?: string
+          service_type?: Database["public"]["Enums"]["service_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -120,6 +146,17 @@ export type Database = {
         | "hearing_impairment"
         | "cognitive_disability"
         | "chronic_health_conditions"
+      service_type:
+        | "advocacy"
+        | "employment_support"
+        | "education_training"
+        | "healthcare_services"
+        | "housing_assistance"
+        | "transportation"
+        | "counseling"
+        | "assistive_technology"
+        | "recreation_social"
+        | "legal_services"
     }
     CompositeTypes: {
       [_ in never]: never
