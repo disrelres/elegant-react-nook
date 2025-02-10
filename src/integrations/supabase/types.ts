@@ -35,41 +35,6 @@ export type Database = {
           },
         ]
       }
-      organization_locations: {
-        Row: {
-          city: string
-          created_at: string
-          id: string
-          organization_id: string
-          state: string
-          zip_code: string
-        }
-        Insert: {
-          city: string
-          created_at?: string
-          id?: string
-          organization_id: string
-          state: string
-          zip_code: string
-        }
-        Update: {
-          city?: string
-          created_at?: string
-          id?: string
-          organization_id?: string
-          state?: string
-          zip_code?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "organization_locations_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       organization_services: {
         Row: {
           created_at: string
@@ -98,37 +63,46 @@ export type Database = {
       }
       organizations: {
         Row: {
-          created_at: string
-          description: string
+          city: string | null
+          created_at: string | null
+          description: string | null
           email: string | null
           id: string
-          is_national: boolean
-          name: string
+          is_national: boolean | null
+          name: string | null
           phone: string | null
-          updated_at: string
+          state: string | null
+          updated_at: string | null
           website: string | null
+          zip_code: string | null
         }
         Insert: {
-          created_at?: string
-          description: string
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
           email?: string | null
-          id?: string
-          is_national?: boolean
-          name: string
+          id: string
+          is_national?: boolean | null
+          name?: string | null
           phone?: string | null
-          updated_at?: string
+          state?: string | null
+          updated_at?: string | null
           website?: string | null
+          zip_code?: string | null
         }
         Update: {
-          created_at?: string
-          description?: string
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
           email?: string | null
           id?: string
-          is_national?: boolean
-          name?: string
+          is_national?: boolean | null
+          name?: string | null
           phone?: string | null
-          updated_at?: string
+          state?: string | null
+          updated_at?: string | null
           website?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }

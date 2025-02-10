@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +33,9 @@ type Organization = {
   is_national: boolean;
   created_at: string;
   updated_at: string;
-  organization_locations: { zip_code: string }[];
+  city: string;
+  state: string;
+  zip_code: string;
   organization_services: { service_type: ServiceType }[];
 };
 
@@ -62,8 +65,9 @@ export const SearchSection = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const { data: locations } = await supabase
-        .from('organization_locations')
+      // Get unique zip codes count
+      const { data: orgsWithZip } = await supabase
+        .from('organizations')
         .select('zip_code', { count: 'exact', head: true });
       
       const { data: services } = await supabase
@@ -75,7 +79,7 @@ export const SearchSection = () => {
         .select('id', { count: 'exact', head: true });
 
       setStats({
-        zipCodes: locations?.length || 0,
+        zipCodes: orgsWithZip?.length || 0,
         services: services?.length || 0,
         totalRecords: orgs?.length || 0,
       });
@@ -89,7 +93,6 @@ export const SearchSection = () => {
       .from('organizations')
       .select(`
         *,
-        organization_locations!inner(zip_code),
         organization_services!inner(service_type)
       `)
       .order('name');
@@ -98,7 +101,7 @@ export const SearchSection = () => {
       query = query.eq('organization_services.service_type', serviceType);
     }
     if (zipCode) {
-      query = query.eq('organization_locations.zip_code', zipCode);
+      query = query.eq('zip_code', zipCode);
     }
     if (keyword) {
       query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
@@ -114,7 +117,7 @@ export const SearchSection = () => {
         website: org.website,
         phone: org.phone,
         email: org.email,
-        zip_code: org.organization_locations[0]?.zip_code || '',
+        zip_code: org.zip_code,
         service_type: org.organization_services[0]?.service_type || 'advocacy',
       }));
       setOrganizations(processedOrgs);
