@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +60,6 @@ export const SearchSection = () => {
   });
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Fetch initial stats
   useEffect(() => {
     const fetchStats = async () => {
       const { data: locations } = await supabase
@@ -145,15 +143,9 @@ export const SearchSection = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-gray-100">
-      <div className="text-center mb-8">
-        <p className="text-lg text-gray-600 font-['Verdana']">
-          {stats.zipCodes} zip codes, {stats.services} services, and {stats.totalRecords} organizations... and growing.
-        </p>
-      </div>
-
+    <div className="container mx-auto px-4 py-4 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_200px_2fr] gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_2fr] gap-4 mb-4">
           <select
             className="p-2 border rounded-md font-['Verdana']"
             value={disabilityType}
@@ -193,7 +185,7 @@ export const SearchSection = () => {
             onChange={(e) => setZipCode(e.target.value)}
           />
 
-          <div className="flex gap-2">
+          <div className="flex flex-col md:flex-row gap-2">
             <input
               type="text"
               placeholder="Enter Keyword"
@@ -212,15 +204,17 @@ export const SearchSection = () => {
       </div>
 
       {organizations.length > 0 && (
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-gray-600 font-['Verdana']">{organizations.length} results found</p>
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#044bab] transition-colors font-['Verdana']"
-          >
-            <Download className="w-4 h-4" />
-            Download Results
-          </button>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+          <p className="text-[#044bab] font-['Verdana']">{organizations.length} results found</p>
+          <div className="bg-white p-2 rounded-lg shadow-sm">
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#044bab] transition-colors font-['Verdana']"
+            >
+              <Download className="w-4 h-4" />
+              Download Results
+            </button>
+          </div>
         </div>
       )}
 
