@@ -144,7 +144,7 @@ export const SearchSection = () => {
 
   return (
     <div className="container mx-auto px-4 py-4 bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_2fr] gap-4 mb-4">
           <select
             className="p-2 border rounded-md font-['Verdana']"
@@ -206,7 +206,7 @@ export const SearchSection = () => {
       {organizations.length > 0 && (
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
           <p className="text-[#044bab] font-['Verdana']">{organizations.length} results found</p>
-          <div className="bg-white p-2 rounded-lg shadow-sm">
+          <div className="bg-white p-2 rounded-lg shadow-sm border border-black">
             <button
               onClick={handleDownload}
               className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#044bab] transition-colors font-['Verdana']"
@@ -230,7 +230,7 @@ export const SearchSection = () => {
         {organizations.map((org) => (
           <Card 
             key={org.id}
-            className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white"
+            className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black"
           >
             <CardHeader>
               <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
