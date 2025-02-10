@@ -138,7 +138,7 @@ export const SearchSection = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-100">
       <div className="text-center mb-8">
         {stats.totalRecords > 0 ? (
           <p className="text-lg text-gray-600 font-['Verdana']">
@@ -149,49 +149,50 @@ export const SearchSection = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <select
-          className="p-2 border rounded-md font-['Verdana']"
-          value={serviceType}
-          onChange={(e) => setServiceType(e.target.value as ServiceType | "")}
-        >
-          <option value="">Select Service Type</option>
-          <option value="advocacy">Advocacy</option>
-          <option value="employment_support">Employment Support</option>
-          <option value="education_training">Education & Training</option>
-          <option value="healthcare_services">Healthcare Services</option>
-          <option value="housing_assistance">Housing Assistance</option>
-          <option value="transportation">Transportation</option>
-          <option value="counseling">Counseling</option>
-          <option value="assistive_technology">Assistive Technology</option>
-          <option value="recreation_social">Recreation & Social</option>
-          <option value="legal_services">Legal Services</option>
-        </select>
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_200px_1fr] gap-4 mb-4">
+          <select
+            className="p-2 border rounded-md font-['Verdana']"
+            value={serviceType}
+            onChange={(e) => setServiceType(e.target.value as ServiceType | "")}
+          >
+            <option value="">Select Service Type</option>
+            <option value="advocacy">Advocacy</option>
+            <option value="employment_support">Employment Support</option>
+            <option value="education_training">Education & Training</option>
+            <option value="healthcare_services">Healthcare Services</option>
+            <option value="housing_assistance">Housing Assistance</option>
+            <option value="transportation">Transportation</option>
+            <option value="counseling">Counseling</option>
+            <option value="assistive_technology">Assistive Technology</option>
+            <option value="recreation_social">Recreation & Social</option>
+            <option value="legal_services">Legal Services</option>
+          </select>
 
-        <input
-          type="text"
-          placeholder="Enter Zip Code"
-          className="p-2 border rounded-md font-['Verdana']"
-          value={zipCode}
-          onChange={(e) => setZipCode(e.target.value)}
-        />
+          <input
+            type="text"
+            placeholder="Enter Zip Code"
+            className="p-2 border rounded-md font-['Verdana'] w-full"
+            value={zipCode}
+            onChange={(e) => setZipCode(e.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Enter Keyword"
-          className="p-2 border rounded-md font-['Verdana']"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-      </div>
-
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={handleSearch}
-          className="bg-[#044bab] text-white px-6 py-2 rounded-md hover:bg-[#033b89] transition-colors font-['Verdana']"
-        >
-          Search
-        </button>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Enter Keyword"
+              className="p-2 border rounded-md font-['Verdana'] flex-grow"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-[#044bab] text-white px-6 py-2 rounded-md hover:bg-[#033b89] transition-colors font-['Verdana'] whitespace-nowrap"
+            >
+              Search
+            </button>
+          </div>
+        </div>
       </div>
 
       {organizations.length > 0 && (
@@ -219,7 +220,7 @@ export const SearchSection = () => {
         {organizations.map((org) => (
           <Card 
             key={org.id}
-            className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg"
+            className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white"
           >
             <CardHeader>
               <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
@@ -254,3 +255,4 @@ export const SearchSection = () => {
     </div>
   );
 };
+
