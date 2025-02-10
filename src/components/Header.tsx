@@ -10,7 +10,7 @@ export const Header = () => {
             Disability Related Resources
           </Link>
           <div className="flex items-center space-x-6">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors font-['Verdana']">
+            <button className="bg-[#F1F1F1] hover:bg-[#e5e5e5] text-black px-4 py-2 rounded-md transition-colors font-['Verdana']">
               💚 Donate
             </button>
           </div>
