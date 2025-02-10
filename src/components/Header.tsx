@@ -10,11 +10,6 @@ export const Header = () => {
             test
           </Link>
           <div className="flex items-center space-x-6">
-            <nav className="hidden md:flex space-x-6">
-              <Link to="/" className="text-gray-600 hover:text-[#044bab] transition-colors font-['Verdana']">
-                Home
-              </Link>
-            </nav>
             <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors font-['Verdana']">
               ❤️ Donate
             </button>
