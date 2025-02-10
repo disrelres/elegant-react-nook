@@ -16,6 +16,13 @@ type ServiceType =
   | "recreation_social"
   | "legal_services";
 
+type DisabilityType = 
+  | "mobility_impairment"
+  | "visual_impairment"
+  | "hearing_impairment"
+  | "cognitive_disability"
+  | "chronic_health_conditions";
+
 type Organization = {
   id: string;
   name: string;
@@ -43,6 +50,7 @@ type ProcessedOrganization = {
 
 export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
+  const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [zipCode, setZipCode] = useState("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
@@ -101,7 +109,6 @@ export const SearchSection = () => {
     const { data } = await query;
     
     if (data) {
-      // Process the data to match our ProcessedOrganization type
       const processedOrgs: ProcessedOrganization[] = data.map((org: Organization) => ({
         id: org.id,
         name: org.name,
@@ -140,17 +147,26 @@ export const SearchSection = () => {
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100">
       <div className="text-center mb-8">
-        {stats.totalRecords > 0 ? (
-          <p className="text-lg text-gray-600 font-['Verdana']">
-            {stats.zipCodes} zip codes, {stats.services} services, and {stats.totalRecords} organizations... and growing.
-          </p>
-        ) : (
-          <p className="text-lg text-gray-600 font-['Verdana']">Loading statistics...</p>
-        )}
+        <p className="text-lg text-gray-600 font-['Verdana']">
+          {stats.zipCodes} zip codes, {stats.services} services, and {stats.totalRecords} organizations... and growing.
+        </p>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_200px_1fr] gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_200px_2fr] gap-4 mb-4">
+          <select
+            className="p-2 border rounded-md font-['Verdana']"
+            value={disabilityType}
+            onChange={(e) => setDisabilityType(e.target.value as DisabilityType | "")}
+          >
+            <option value="">Select Disability Type</option>
+            <option value="mobility_impairment">Mobility Impairment</option>
+            <option value="visual_impairment">Visual Impairment</option>
+            <option value="hearing_impairment">Hearing Impairment</option>
+            <option value="cognitive_disability">Cognitive Disability</option>
+            <option value="chronic_health_conditions">Chronic Health Conditions</option>
+          </select>
+
           <select
             className="p-2 border rounded-md font-['Verdana']"
             value={serviceType}
@@ -255,4 +271,3 @@ export const SearchSection = () => {
     </div>
   );
 };
-
