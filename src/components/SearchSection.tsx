@@ -157,7 +157,7 @@ export const SearchSection = () => {
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_2fr] gap-4 mb-4">
           <select
-            className="p-2 border rounded-md font-['Verdana']"
+            className="p-2 border rounded-md font-['Verdana'] text-[#044bab]"
             value={disabilityType}
             onChange={(e) => setDisabilityType(e.target.value as DisabilityType | "")}
           >
