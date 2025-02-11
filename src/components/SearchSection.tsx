@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,7 +54,6 @@ type ProcessedOrganization = {
 export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
-  const [zipCode, setZipCode] = useState("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
   const [stats, setStats] = useState({
@@ -67,7 +65,6 @@ export const SearchSection = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      // Get unique zip codes count
       const { data: orgsWithZip } = await supabase
         .from('organizations')
         .select('zip_code', { count: 'exact', head: true });
@@ -106,9 +103,6 @@ export const SearchSection = () => {
     if (disabilityType) {
       query = query.eq('organization_disabilities.disability_type', disabilityType);
     }
-    if (zipCode) {
-      query = query.eq('zip_code', zipCode);
-    }
     if (keyword) {
       query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
     }
@@ -134,6 +128,10 @@ export const SearchSection = () => {
     setHasSearched(true);
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, [serviceType, disabilityType]);
+
   const handleDownload = () => {
     if (!organizations.length) return;
     
@@ -155,9 +153,9 @@ export const SearchSection = () => {
   return (
     <div className="container mx-auto px-4 py-4 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_2fr] gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 mb-4">
           <select
-            className="p-2 border rounded-md font-['Verdana'] text-[#044bab]"
+            className="p-2 border rounded-md font-['Verdana'] text-black"
             value={disabilityType}
             onChange={(e) => setDisabilityType(e.target.value as DisabilityType | "")}
           >
@@ -170,7 +168,7 @@ export const SearchSection = () => {
           </select>
 
           <select
-            className="p-2 border rounded-md font-['Verdana']"
+            className="p-2 border rounded-md font-['Verdana'] text-black"
             value={serviceType}
             onChange={(e) => setServiceType(e.target.value as ServiceType | "")}
           >
@@ -187,19 +185,11 @@ export const SearchSection = () => {
             <option value="legal_services">Legal Services</option>
           </select>
 
-          <input
-            type="text"
-            placeholder="Enter Zip Code"
-            className="p-2 border rounded-md font-['Verdana'] w-full"
-            value={zipCode}
-            onChange={(e) => setZipCode(e.target.value)}
-          />
-
-          <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex gap-2">
             <input
               type="text"
               placeholder="Enter Keyword"
-              className="p-2 border rounded-md font-['Verdana'] flex-grow"
+              className="p-2 border rounded-md font-['Verdana'] flex-grow text-black"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -215,11 +205,11 @@ export const SearchSection = () => {
 
       {organizations.length > 0 && (
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-          <p className="text-[#044bab] font-['Verdana']">{organizations.length} results found</p>
+          <p className="text-black font-['Verdana']">{organizations.length} results found</p>
           <div className="bg-white p-2 rounded-lg shadow-sm border border-black">
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#044bab] transition-colors font-['Verdana']"
+              className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-[#044bab] transition-colors font-['Verdana']"
             >
               <Download className="w-4 h-4" />
               Download Results
@@ -229,11 +219,11 @@ export const SearchSection = () => {
       )}
 
       {hasSearched && organizations.length === 0 && (
-        <p className="text-center text-gray-600 font-['Verdana']">No results found. Please try different search criteria.</p>
+        <p className="text-center text-black font-['Verdana']">No results found. Please try different search criteria.</p>
       )}
 
       {!hasSearched && (
-        <p className="text-center text-gray-600 font-['Verdana']">Please select search filters to view results.</p>
+        <p className="text-center text-black font-['Verdana']">Please select search filters to view results.</p>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -246,10 +236,10 @@ export const SearchSection = () => {
               <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4 font-['Verdana']">{org.description}</p>
+              <p className="text-black mb-4 font-['Verdana']">{org.description}</p>
               {org.website && (
                 <p className="text-sm mb-2 font-['Verdana']">
-                  <strong>Website:</strong>{" "}
+                  <strong className="text-black">Website:</strong>{" "}
                   <a href={org.website} target="_blank" rel="noopener noreferrer" className="text-[#044bab] hover:underline">
                     {org.website}
                   </a>
@@ -257,12 +247,12 @@ export const SearchSection = () => {
               )}
               {org.phone && (
                 <p className="text-sm mb-2 font-['Verdana']">
-                  <strong>Phone:</strong> {org.phone}
+                  <strong className="text-black">Phone:</strong> <span className="text-black">{org.phone}</span>
                 </p>
               )}
               {org.email && (
                 <p className="text-sm font-['Verdana']">
-                  <strong>Email:</strong>{" "}
+                  <strong className="text-black">Email:</strong>{" "}
                   <a href={`mailto:${org.email}`} className="text-[#044bab] hover:underline">
                     {org.email}
                   </a>
