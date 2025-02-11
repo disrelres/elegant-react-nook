@@ -36,6 +36,7 @@ type Organization = {
   city: string;
   state: string;
   zip_code: string;
+  organization_disabilities: { disability_type: DisabilityType }[];
   organization_services: { service_type: ServiceType }[];
 };
 
@@ -48,6 +49,7 @@ type ProcessedOrganization = {
   email: string | null;
   zip_code: string;
   service_type: ServiceType;
+  disability_type: DisabilityType;
 };
 
 export const SearchSection = () => {
@@ -93,12 +95,16 @@ export const SearchSection = () => {
       .from('organizations')
       .select(`
         *,
-        organization_services!inner(service_type)
+        organization_services!inner(service_type),
+        organization_disabilities!inner(disability_type)
       `)
       .order('name');
 
     if (serviceType) {
       query = query.eq('organization_services.service_type', serviceType);
+    }
+    if (disabilityType) {
+      query = query.eq('organization_disabilities.disability_type', disabilityType);
     }
     if (zipCode) {
       query = query.eq('zip_code', zipCode);
@@ -117,8 +123,9 @@ export const SearchSection = () => {
         website: org.website,
         phone: org.phone,
         email: org.email,
-        zip_code: org.zip_code,
+        zip_code: org.zip_code || '',
         service_type: org.organization_services[0]?.service_type || 'advocacy',
+        disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
       }));
       setOrganizations(processedOrgs);
     } else {
