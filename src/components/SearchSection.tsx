@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, LayoutGrid, List, Pin, PinOff } from "lucide-react";
+import { Download, Pin, PinOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -57,7 +58,6 @@ export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
   const [pinnedOrgs, setPinnedOrgs] = useState<string[]>([]);
   const [stats, setStats] = useState({
@@ -93,6 +93,19 @@ export const SearchSection = () => {
   }, []);
 
   const handleSearch = async () => {
+    // First, get pinned organizations
+    const pinnedQuery = supabase
+      .from('organizations')
+      .select(`
+        *,
+        organization_services!inner(service_type),
+        organization_disabilities!inner(disability_type)
+      `)
+      .in('id', pinnedOrgs);
+
+    const { data: pinnedData } = await pinnedQuery;
+
+    // Then get filtered organizations
     let query = supabase
       .from('organizations')
       .select(`
@@ -109,33 +122,32 @@ export const SearchSection = () => {
       query = query.eq('organization_disabilities.disability_type', disabilityType);
     }
 
-    const { data } = await query;
+    const { data: filteredData } = await query;
     
-    if (data) {
-      const processedOrgs: ProcessedOrganization[] = data
-        .filter(org => !hiddenOrgs.includes(org.id))
-        .map((org: Organization) => ({
-          id: org.id,
-          name: org.name,
-          description: org.description,
-          website: org.website,
-          phone: org.phone,
-          email: org.email,
-          zip_code: org.zip_code || '',
-          service_type: org.organization_services[0]?.service_type || 'advocacy',
-          disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
-        }));
-      
-      // Sort organizations to show pinned ones first
-      const sortedOrgs = [...processedOrgs].sort((a, b) => {
-        const aIsPinned = pinnedOrgs.includes(a.id);
-        const bIsPinned = pinnedOrgs.includes(b.id);
-        if (aIsPinned && !bIsPinned) return -1;
-        if (!aIsPinned && bIsPinned) return 1;
-        return 0;
+    if (filteredData || pinnedData) {
+      const processOrg = (org: Organization): ProcessedOrganization => ({
+        id: org.id,
+        name: org.name,
+        description: org.description,
+        website: org.website,
+        phone: org.phone,
+        email: org.email,
+        zip_code: org.zip_code || '',
+        service_type: org.organization_services[0]?.service_type || 'advocacy',
+        disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
       });
-      
-      setOrganizations(sortedOrgs);
+
+      // Process pinned organizations
+      const processedPinnedOrgs = (pinnedData || [])
+        .map(processOrg);
+
+      // Process filtered organizations
+      const processedFilteredOrgs = (filteredData || [])
+        .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
+        .map(processOrg);
+
+      // Combine pinned and filtered organizations
+      setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
     } else {
       setOrganizations([]);
     }
@@ -179,6 +191,7 @@ export const SearchSection = () => {
   return (
     <div className="container mx-auto px-4 py-4 bg-gray-100">
       <div className="text-center mb-8">
+        <p className="text-black font-['Verdana'] mb-2">Select the text below to watch our instructional video:</p>
         <a 
           href="https://youtu.be/lMbAA1-6_bk?list=PLkhYgj3TFHU_SW5ePQkhaUdRcRLgdYEaP"
           target="_blank"
@@ -229,20 +242,6 @@ export const SearchSection = () => {
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
             <div className="flex items-center gap-4">
               <p className="text-black font-['Verdana']">{organizations.length} results found</p>
-              <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-black">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded ${viewMode === "grid" ? "text-[#044bab]" : "text-gray-400"} hover:text-[#044bab] transition-colors`}
-                >
-                  <LayoutGrid className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-2 rounded ${viewMode === "list" ? "text-[#044bab]" : "text-gray-400"} hover:text-[#044bab] transition-colors`}
-                >
-                  <List className="w-5 h-5" />
-                </button>
-              </div>
             </div>
             <div className="bg-white p-2 rounded-lg shadow-sm border border-black">
               <button
@@ -253,6 +252,16 @@ export const SearchSection = () => {
                 Download Results
               </button>
             </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-black mb-6">
+            <p className="text-black font-['Verdana'] mb-2">
+              <strong>Tips:</strong>
+            </p>
+            <ul className="list-disc list-inside text-black font-['Verdana'] space-y-2">
+              <li>Swipe a card left to dismiss it from your current results</li>
+              <li>Click the pin icon in the top-right corner of a card to keep it visible across all searches</li>
+              <li>Pinned cards will always appear at the top of your results</li>
+            </ul>
           </div>
           <Separator className="my-6 bg-black" />
         </>
@@ -270,7 +279,7 @@ export const SearchSection = () => {
         <p className="text-center text-black font-['Verdana']">Please select search filters to view results.</p>
       )}
 
-      <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
+      <div className="flex flex-col gap-4">
         <AnimatePresence>
           {hasFilter && organizations.map((org) => (
             <motion.div
@@ -286,11 +295,9 @@ export const SearchSection = () => {
               }}
             >
               <Card 
-                className={`transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black ${
-                  viewMode === "list" ? "flex flex-col md:flex-row md:items-start gap-4" : ""
-                }`}
+                className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black flex flex-col md:flex-row md:items-start gap-4"
               >
-                <CardHeader className={`${viewMode === "list" ? "flex-shrink-0 md:w-1/3" : ""} relative`}>
+                <CardHeader className="flex-shrink-0 md:w-1/3 relative">
                   <button
                     onClick={() => handleTogglePin(org.id)}
                     className="absolute top-2 right-2 text-gray-400 hover:text-[#044bab] transition-colors"
@@ -303,7 +310,7 @@ export const SearchSection = () => {
                   </button>
                   <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
                 </CardHeader>
-                <CardContent className={viewMode === "list" ? "flex-grow" : ""}>
+                <CardContent className="flex-grow">
                   <p className="text-black mb-4 font-['Verdana']">{org.description}</p>
                   {org.website && (
                     <p className="text-sm mb-2 font-['Verdana']">
