@@ -24,6 +24,14 @@ export const Footer = () => {
             >
               Bluesky
             </a>
+            <a 
+              href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAAYynA85UODhYNTVKSkRBVzhKREw0MDFGVERWSFJTWS4u" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-white hover:text-gray-200 text-sm font-['Verdana'] mt-1 transition-colors"
+            >
+              Feedback Form
+            </a>
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Download } from "lucide-react";
+import { Download, LayoutGrid, List } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 type ServiceType = 
   | "advocacy"
@@ -56,12 +57,14 @@ export const SearchSection = () => {
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [stats, setStats] = useState({
     zipCodes: 0,
     services: 0,
     totalRecords: 0,
   });
   const [hasSearched, setHasSearched] = useState(false);
+  const hasFilter = serviceType !== "" || disabilityType !== "" || keyword !== "";
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -185,40 +188,55 @@ export const SearchSection = () => {
             <option value="legal_services">Legal Services</option>
           </select>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Enter Keyword"
-              className="p-2 border rounded-md font-['Verdana'] flex-grow text-black"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
-            <button
-              onClick={handleSearch}
-              className="bg-[#044bab] text-white px-6 py-2 rounded-md hover:bg-[#033b89] transition-colors font-['Verdana'] whitespace-nowrap"
-            >
-              Search
-            </button>
-          </div>
+          <input
+            type="text"
+            placeholder="Enter Keyword"
+            className="p-2 border rounded-md font-['Verdana'] flex-grow text-black"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
         </div>
       </div>
 
-      {organizations.length > 0 && (
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-          <p className="text-black font-['Verdana']">{organizations.length} results found</p>
-          <div className="bg-white p-2 rounded-lg shadow-sm border border-black">
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-[#044bab] transition-colors font-['Verdana']"
-            >
-              <Download className="w-4 h-4" />
-              Download Results
-            </button>
+      {organizations.length > 0 && hasFilter && (
+        <>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <div className="flex items-center gap-4">
+              <p className="text-black font-['Verdana']">{organizations.length} results found</p>
+              <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-black">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 rounded ${viewMode === "grid" ? "text-[#044bab]" : "text-gray-400"} hover:text-[#044bab] transition-colors`}
+                >
+                  <LayoutGrid className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 rounded ${viewMode === "list" ? "text-[#044bab]" : "text-gray-400"} hover:text-[#044bab] transition-colors`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="bg-white p-2 rounded-lg shadow-sm border border-black">
+              <button
+                onClick={handleDownload}
+                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-[#044bab] transition-colors font-['Verdana']"
+              >
+                <Download className="w-4 h-4" />
+                Download Results
+              </button>
+            </div>
           </div>
-        </div>
+          <Separator className="my-6 bg-black" />
+        </>
       )}
 
-      {hasSearched && organizations.length === 0 && (
+      {hasSearched && !hasFilter && (
+        <p className="text-center text-black font-['Verdana']">Please select at least one filter to view results.</p>
+      )}
+
+      {hasSearched && hasFilter && organizations.length === 0 && (
         <p className="text-center text-black font-['Verdana']">No results found. Please try different search criteria.</p>
       )}
 
@@ -226,16 +244,18 @@ export const SearchSection = () => {
         <p className="text-center text-black font-['Verdana']">Please select search filters to view results.</p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {organizations.map((org) => (
+      <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
+        {hasFilter && organizations.map((org) => (
           <Card 
             key={org.id}
-            className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black"
+            className={`transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black ${
+              viewMode === "list" ? "flex flex-col md:flex-row md:items-start gap-4" : ""
+            }`}
           >
-            <CardHeader>
+            <CardHeader className={viewMode === "list" ? "flex-shrink-0 md:w-1/3" : ""}>
               <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
             </CardHeader>
-            <CardContent>
+            <CardContent className={viewMode === "list" ? "flex-grow" : ""}>
               <p className="text-black mb-4 font-['Verdana']">{org.description}</p>
               {org.website && (
                 <p className="text-sm mb-2 font-['Verdana']">

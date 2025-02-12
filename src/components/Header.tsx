@@ -11,7 +11,7 @@ export const Header = () => {
           </Link>
           <div className="flex items-center space-x-6">
             <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors font-['Verdana']">
-              💚 Donate
+              Donate
             </button>
           </div>
         </div>
