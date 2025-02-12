@@ -29,7 +29,7 @@ export const OrganizationCard = ({
         }
       }}
     >
-      <Card className="transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black flex flex-col md:flex-row md:items-start gap-4">
+      <Card className="transition-all duration-200 hover:border-[#044bab] hover:border-2 hover:shadow-lg bg-white border border-black flex flex-col md:flex-row md:items-start gap-4">
         <CardHeader className="flex-shrink-0 md:w-1/3 relative">
           <button
             onClick={() => onTogglePin(organization.id)}
