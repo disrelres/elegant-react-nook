@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, LayoutGrid, List } from "lucide-react";
+import { Download, LayoutGrid, List, Pin, PinOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ServiceType = 
   | "advocacy"
@@ -55,16 +56,17 @@ type ProcessedOrganization = {
 export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
-  const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
+  const [pinnedOrgs, setPinnedOrgs] = useState<string[]>([]);
   const [stats, setStats] = useState({
     zipCodes: 0,
     services: 0,
     totalRecords: 0,
   });
   const [hasSearched, setHasSearched] = useState(false);
-  const hasFilter = serviceType !== "" || disabilityType !== "" || keyword !== "";
+  const hasFilter = serviceType !== "" || disabilityType !== "";
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -106,25 +108,34 @@ export const SearchSection = () => {
     if (disabilityType) {
       query = query.eq('organization_disabilities.disability_type', disabilityType);
     }
-    if (keyword) {
-      query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
-    }
 
     const { data } = await query;
     
     if (data) {
-      const processedOrgs: ProcessedOrganization[] = data.map((org: Organization) => ({
-        id: org.id,
-        name: org.name,
-        description: org.description,
-        website: org.website,
-        phone: org.phone,
-        email: org.email,
-        zip_code: org.zip_code || '',
-        service_type: org.organization_services[0]?.service_type || 'advocacy',
-        disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
-      }));
-      setOrganizations(processedOrgs);
+      const processedOrgs: ProcessedOrganization[] = data
+        .filter(org => !hiddenOrgs.includes(org.id))
+        .map((org: Organization) => ({
+          id: org.id,
+          name: org.name,
+          description: org.description,
+          website: org.website,
+          phone: org.phone,
+          email: org.email,
+          zip_code: org.zip_code || '',
+          service_type: org.organization_services[0]?.service_type || 'advocacy',
+          disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
+        }));
+      
+      // Sort organizations to show pinned ones first
+      const sortedOrgs = [...processedOrgs].sort((a, b) => {
+        const aIsPinned = pinnedOrgs.includes(a.id);
+        const bIsPinned = pinnedOrgs.includes(b.id);
+        if (aIsPinned && !bIsPinned) return -1;
+        if (!aIsPinned && bIsPinned) return 1;
+        return 0;
+      });
+      
+      setOrganizations(sortedOrgs);
     } else {
       setOrganizations([]);
     }
@@ -133,7 +144,19 @@ export const SearchSection = () => {
 
   useEffect(() => {
     handleSearch();
-  }, [serviceType, disabilityType]);
+  }, [serviceType, disabilityType, hiddenOrgs, pinnedOrgs]);
+
+  const handleHideOrg = (orgId: string) => {
+    setHiddenOrgs(prev => [...prev, orgId]);
+  };
+
+  const handleTogglePin = (orgId: string) => {
+    setPinnedOrgs(prev => 
+      prev.includes(orgId) 
+        ? prev.filter(id => id !== orgId)
+        : [...prev, orgId]
+    );
+  };
 
   const handleDownload = () => {
     if (!organizations.length) return;
@@ -155,8 +178,19 @@ export const SearchSection = () => {
 
   return (
     <div className="container mx-auto px-4 py-4 bg-gray-100">
+      <div className="text-center mb-8">
+        <a 
+          href="https://youtu.be/lMbAA1-6_bk?list=PLkhYgj3TFHU_SW5ePQkhaUdRcRLgdYEaP"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#044bab] hover:underline font-['Verdana']"
+        >
+          Watch our instructional video
+        </a>
+      </div>
+
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <select
             className="p-2 border rounded-md font-['Verdana'] text-black"
             value={disabilityType}
@@ -187,14 +221,6 @@ export const SearchSection = () => {
             <option value="recreation_social">Recreation & Social</option>
             <option value="legal_services">Legal Services</option>
           </select>
-
-          <input
-            type="text"
-            placeholder="Enter Keyword"
-            className="p-2 border rounded-md font-['Verdana'] flex-grow text-black"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
         </div>
       </div>
 
@@ -245,42 +271,66 @@ export const SearchSection = () => {
       )}
 
       <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
-        {hasFilter && organizations.map((org) => (
-          <Card 
-            key={org.id}
-            className={`transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black ${
-              viewMode === "list" ? "flex flex-col md:flex-row md:items-start gap-4" : ""
-            }`}
-          >
-            <CardHeader className={viewMode === "list" ? "flex-shrink-0 md:w-1/3" : ""}>
-              <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
-            </CardHeader>
-            <CardContent className={viewMode === "list" ? "flex-grow" : ""}>
-              <p className="text-black mb-4 font-['Verdana']">{org.description}</p>
-              {org.website && (
-                <p className="text-sm mb-2 font-['Verdana']">
-                  <strong className="text-black">Website:</strong>{" "}
-                  <a href={org.website} target="_blank" rel="noopener noreferrer" className="text-[#044bab] hover:underline">
-                    {org.website}
-                  </a>
-                </p>
-              )}
-              {org.phone && (
-                <p className="text-sm mb-2 font-['Verdana']">
-                  <strong className="text-black">Phone:</strong> <span className="text-black">{org.phone}</span>
-                </p>
-              )}
-              {org.email && (
-                <p className="text-sm font-['Verdana']">
-                  <strong className="text-black">Email:</strong>{" "}
-                  <a href={`mailto:${org.email}`} className="text-[#044bab] hover:underline">
-                    {org.email}
-                  </a>
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+        <AnimatePresence>
+          {hasFilter && organizations.map((org) => (
+            <motion.div
+              key={org.id}
+              initial={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={(event, info) => {
+                if (info.offset.x < -100) {
+                  handleHideOrg(org.id);
+                }
+              }}
+            >
+              <Card 
+                className={`transition-all duration-200 hover:border-[#044bab] hover:shadow-lg bg-white border border-black ${
+                  viewMode === "list" ? "flex flex-col md:flex-row md:items-start gap-4" : ""
+                }`}
+              >
+                <CardHeader className={`${viewMode === "list" ? "flex-shrink-0 md:w-1/3" : ""} relative`}>
+                  <button
+                    onClick={() => handleTogglePin(org.id)}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-[#044bab] transition-colors"
+                  >
+                    {pinnedOrgs.includes(org.id) ? (
+                      <Pin className="w-5 h-5" />
+                    ) : (
+                      <PinOff className="w-5 h-5" />
+                    )}
+                  </button>
+                  <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana']">{org.name}</h3>
+                </CardHeader>
+                <CardContent className={viewMode === "list" ? "flex-grow" : ""}>
+                  <p className="text-black mb-4 font-['Verdana']">{org.description}</p>
+                  {org.website && (
+                    <p className="text-sm mb-2 font-['Verdana']">
+                      <strong className="text-black">Website:</strong>{" "}
+                      <a href={org.website} target="_blank" rel="noopener noreferrer" className="text-[#044bab] hover:underline">
+                        {org.website}
+                      </a>
+                    </p>
+                  )}
+                  {org.phone && (
+                    <p className="text-sm mb-2 font-['Verdana']">
+                      <strong className="text-black">Phone:</strong> <span className="text-black">{org.phone}</span>
+                    </p>
+                  )}
+                  {org.email && (
+                    <p className="text-sm font-['Verdana']">
+                      <strong className="text-black">Email:</strong>{" "}
+                      <a href={`mailto:${org.email}`} className="text-[#044bab] hover:underline">
+                        {org.email}
+                      </a>
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
