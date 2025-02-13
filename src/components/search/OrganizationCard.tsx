@@ -66,22 +66,6 @@ export const OrganizationCard = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={speakContent}
-                    className="absolute top-2 left-2 text-gray-400 hover:text-[#044bab] transition-colors p-2"
-                    aria-label="Read content aloud"
-                  >
-                    <Volume2 className="w-10 h-10" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Read card content aloud</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
                     onClick={() => onTogglePin(organization.id)}
                     className="absolute top-2 right-2 text-gray-400 hover:text-[#044bab] transition-colors p-2"
                   >
@@ -101,7 +85,25 @@ export const OrganizationCard = ({
           <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] mt-4 select-text">{organization.name}</h3>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="text-black mb-4 font-['Verdana'] select-text">{organization.description}</p>
+          <div className="flex justify-between items-start mb-4">
+            <p className="text-black font-['Verdana'] select-text pr-12">{organization.description}</p>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={speakContent}
+                    className="text-gray-400 hover:text-[#044bab] transition-colors p-2 flex-shrink-0"
+                    aria-label="Read content aloud"
+                  >
+                    <Volume2 className="w-10 h-10" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Read card content aloud</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           {organization.website && (
             <p className="text-sm mb-2 font-['Verdana'] select-text">
               <strong className="text-black">Website:</strong>{" "}

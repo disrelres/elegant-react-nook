@@ -13,10 +13,9 @@ import {
 interface SearchResultsHeaderProps {
   resultCount: number;
   onDownload: () => void;
-  onKeywordChange?: (keyword: string) => void;
 }
 
-export const SearchResultsHeader = ({ resultCount, onDownload, onKeywordChange }: SearchResultsHeaderProps) => {
+export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHeaderProps) => {
   const [showTips, setShowTips] = useState(true);
 
   return (
@@ -26,12 +25,6 @@ export const SearchResultsHeader = ({ resultCount, onDownload, onKeywordChange }
           <p className="text-black font-['Verdana']">{resultCount} results</p>
         </div>
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search by keyword..."
-            onChange={(e) => onKeywordChange?.(e.target.value)}
-            className="px-3 py-2 border border-black rounded-lg font-['Verdana'] text-black focus:outline-none focus:border-[#044bab]"
-          />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -91,7 +84,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload, onKeywordChange }
                 <strong>Tips:</strong>
               </p>
               <ul className="list-disc list-inside text-black font-['Verdana'] space-y-2">
-                <li>Swipe a card left to dismiss it from your current results</li>
+                <li>Swipe a card left to dismiss it from your current results (Phone only)</li>
                 <li>Click the pin icon on the card to keep it visible across all searches</li>
                 <li>Click the speaker icon to have the card's content read aloud</li>
               </ul>

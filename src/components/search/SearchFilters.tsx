@@ -1,11 +1,13 @@
 
 import { DisabilityType, ServiceType } from "../types/organization";
+import { useState } from "react";
 
 interface SearchFiltersProps {
   disabilityType: DisabilityType | "";
   serviceType: ServiceType | "";
   onDisabilityTypeChange: (value: DisabilityType | "") => void;
   onServiceTypeChange: (value: ServiceType | "") => void;
+  onKeywordChange?: (keyword: string) => void;
 }
 
 export const SearchFilters = ({
@@ -13,10 +15,17 @@ export const SearchFilters = ({
   serviceType,
   onDisabilityTypeChange,
   onServiceTypeChange,
+  onKeywordChange,
 }: SearchFiltersProps) => {
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearch = () => {
+    onKeywordChange?.(keyword);
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <select
           className="p-2 border rounded-md font-['Verdana'] text-black"
           value={disabilityType}
@@ -47,6 +56,23 @@ export const SearchFilters = ({
           <option value="recreation_social">Recreation & Social</option>
           <option value="legal_services">Legal Services</option>
         </select>
+
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Search by keyword..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="flex-1 p-2 border rounded-md font-['Verdana'] text-black"
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-white text-gray-400 hover:text-[#044bab] transition-colors font-['Verdana'] border border-black rounded-md"
+          >
+            Search
+          </button>
+        </div>
       </div>
     </div>
   );
