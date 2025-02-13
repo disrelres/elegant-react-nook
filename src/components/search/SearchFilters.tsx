@@ -1,6 +1,13 @@
 
 import { DisabilityType, ServiceType } from "../types/organization";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Search } from "lucide-react";
 
 interface SearchFiltersProps {
   disabilityType: DisabilityType | "";
@@ -66,12 +73,21 @@ export const SearchFilters = ({
             className="flex-1 p-2 border rounded-md font-['Verdana'] text-black"
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <button
-            onClick={handleSearch}
-            className="px-4 py-2 bg-white text-gray-400 hover:text-[#044bab] transition-colors font-['Verdana'] border border-black rounded-md"
-          >
-            Search
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleSearch}
+                  className="px-4 py-2 bg-white text-gray-400 hover:text-[#044bab] transition-colors font-['Verdana'] border border-black rounded-md"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Search within results</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>

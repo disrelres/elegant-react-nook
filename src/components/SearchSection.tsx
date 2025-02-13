@@ -1,26 +1,48 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatePresence } from "framer-motion";
 import { VideoLink } from "./search/VideoLink";
 import { SearchFilters } from "./search/SearchFilters";
 import { SearchResultsHeader } from "./search/SearchResultsHeader";
 import { OrganizationCard } from "./search/OrganizationCard";
+import { ChevronUp } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Organization, ProcessedOrganization, ServiceType, DisabilityType } from "./types/organization";
 
 export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
+  const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
   const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
   const [pinnedOrgs, setPinnedOrgs] = useState<string[]>([]);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [stats, setStats] = useState({
     zipCodes: 0,
     services: 0,
     totalRecords: 0,
   });
   const [hasSearched, setHasSearched] = useState(false);
-  const hasFilter = serviceType !== "" || disabilityType !== "";
+  const hasFilter = serviceType !== "" || disabilityType !== "" || keyword !== "";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -46,7 +68,7 @@ export const SearchSection = () => {
     fetchStats();
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     const pinnedQuery = supabase
       .from('organizations')
       .select(`
@@ -72,6 +94,9 @@ export const SearchSection = () => {
     }
     if (disabilityType) {
       query = query.eq('organization_disabilities.disability_type', disabilityType);
+    }
+    if (keyword) {
+      query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
     }
 
     const { data: filteredData } = await query;
@@ -101,11 +126,11 @@ export const SearchSection = () => {
       setOrganizations([]);
     }
     setHasSearched(true);
-  };
+  }, [serviceType, disabilityType, keyword, hiddenOrgs, pinnedOrgs]);
 
   useEffect(() => {
     handleSearch();
-  }, [serviceType, disabilityType, hiddenOrgs, pinnedOrgs]);
+  }, [handleSearch]);
 
   const handleHideOrg = (orgId: string) => {
     setHiddenOrgs(prev => [...prev, orgId]);
@@ -117,6 +142,10 @@ export const SearchSection = () => {
         ? prev.filter(id => id !== orgId)
         : [...prev, orgId]
     );
+  };
+
+  const handleKeywordSearch = (newKeyword: string) => {
+    setKeyword(newKeyword);
   };
 
   const handleDownload = () => {
@@ -146,6 +175,7 @@ export const SearchSection = () => {
         serviceType={serviceType}
         onDisabilityTypeChange={setDisabilityType}
         onServiceTypeChange={setServiceType}
+        onKeywordChange={handleKeywordSearch}
       />
 
       {organizations.length > 0 && hasFilter && (
@@ -167,7 +197,7 @@ export const SearchSection = () => {
         <p className="text-center text-black font-['Verdana']">Please select search filters to view results.</p>
       )}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 relative">
         <AnimatePresence>
           {hasFilter && organizations.map((org) => (
             <OrganizationCard
@@ -179,6 +209,27 @@ export const SearchSection = () => {
             />
           ))}
         </AnimatePresence>
+
+        {showScrollTop && (
+          <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={scrollToTop}
+                    className="bg-white text-gray-400 hover:text-[#044bab] p-4 rounded-full shadow-lg border border-black transition-colors"
+                    aria-label="Return to top"
+                  >
+                    <ChevronUp className="w-6 h-6" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Return to top of page</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
       </div>
     </div>
   );
