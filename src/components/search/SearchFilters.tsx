@@ -84,7 +84,7 @@ export const SearchFilters = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Search within results</p>
+                <p>Search resources</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
