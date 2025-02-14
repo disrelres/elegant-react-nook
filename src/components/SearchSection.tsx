@@ -99,7 +99,7 @@ export const SearchSection = () => {
         query = query.eq('organization_disabilities.disability_type', disabilityType);
       }
       if (keyword) {
-        query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
+        query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%,city.ilike.%${keyword}%,state.ilike.%${keyword}%,zip_code.ilike.%${keyword}%`);
       }
 
       const { data } = await query;
@@ -119,9 +119,11 @@ export const SearchSection = () => {
     });
 
     const processedPinnedOrgs = pinnedData.map(processOrg);
-    const processedFilteredOrgs = filteredData
-      .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
-      .map(processOrg);
+    const processedFilteredOrgs = hasFilter
+      ? filteredData
+          .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
+          .map(processOrg)
+      : [];
 
     setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
     setHasSearched(true);

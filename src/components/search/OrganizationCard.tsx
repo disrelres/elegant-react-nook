@@ -60,50 +60,48 @@ export const OrganizationCard = ({
       {...cardMotionProps}
     >
       <Card className="transition-all duration-200 hover:border-[#044bab] hover:border-2 hover:shadow-lg bg-white border border-black flex flex-col md:flex-row md:items-start gap-4">
-        <CardHeader className="flex-shrink-0 md:w-1/3 relative">
-          <div className="flex justify-between items-start">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => onTogglePin(organization.id)}
-                    className="absolute top-2 right-2 text-gray-400 hover:text-[#044bab] transition-colors p-2"
-                  >
-                    {isPinned ? (
-                      <Pin className="w-10 h-10" />
-                    ) : (
-                      <PinOff className="w-10 h-10" />
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{isPinned ? 'Unpin this card' : 'Pin this card to keep it visible'}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] mt-4 select-text">{organization.name}</h3>
-        </CardHeader>
-        <CardContent className="flex-grow">
+        <CardContent className="flex-grow pt-6">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-black font-['Verdana'] select-text pr-12">{organization.description}</p>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={speakContent}
-                    className="text-gray-400 hover:text-[#044bab] transition-colors p-2 flex-shrink-0"
-                    aria-label="Read content aloud"
-                  >
-                    <Volume2 className="w-10 h-10" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Read card content aloud</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text">{organization.name}</h3>
+            <div className="flex gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => onTogglePin(organization.id)}
+                      className="text-gray-400 hover:text-[#044bab] transition-colors"
+                    >
+                      {isPinned ? (
+                        <Pin className="w-6 h-6" />
+                      ) : (
+                        <PinOff className="w-6 h-6" />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{isPinned ? 'Unpin this card' : 'Pin this card to keep it visible'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={speakContent}
+                      className="text-gray-400 hover:text-[#044bab] transition-colors"
+                      aria-label="Read content aloud"
+                    >
+                      <Volume2 className="w-6 h-6" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Read card content aloud</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
+          <p className="text-black font-['Verdana'] select-text mb-4">{organization.description}</p>
           {organization.website && (
             <p className="text-sm mb-2 font-['Verdana'] select-text">
               <strong className="text-black">Website:</strong>{" "}
