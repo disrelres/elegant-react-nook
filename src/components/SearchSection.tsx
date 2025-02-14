@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatePresence } from "framer-motion";
@@ -69,64 +68,64 @@ export const SearchSection = () => {
   }, []);
 
   const handleSearch = useCallback(async () => {
-    const pinnedQuery = supabase
-      .from('organizations')
-      .select(`
-        *,
-        organization_services!inner(service_type),
-        organization_disabilities!inner(disability_type)
-      `)
-      .in('id', pinnedOrgs);
-
-    const { data: pinnedData } = await pinnedQuery;
-
-    let query = supabase
-      .from('organizations')
-      .select(`
-        *,
-        organization_services!inner(service_type),
-        organization_disabilities!inner(disability_type)
-      `)
-      .order('name');
-
-    if (serviceType) {
-      query = query.eq('organization_services.service_type', serviceType);
-    }
-    if (disabilityType) {
-      query = query.eq('organization_disabilities.disability_type', disabilityType);
-    }
-    if (keyword) {
-      query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
+    let pinnedData: any[] = [];
+    if (pinnedOrgs.length > 0) {
+      const { data: fetchedPinnedData } = await supabase
+        .from('organizations')
+        .select(`
+          *,
+          organization_services!inner(service_type),
+          organization_disabilities!inner(disability_type)
+        `)
+        .in('id', pinnedOrgs);
+      pinnedData = fetchedPinnedData || [];
     }
 
-    const { data: filteredData } = await query;
+    let filteredData: any[] = [];
+    if (hasFilter) {
+      let query = supabase
+        .from('organizations')
+        .select(`
+          *,
+          organization_services!inner(service_type),
+          organization_disabilities!inner(disability_type)
+        `)
+        .order('name');
+
+      if (serviceType) {
+        query = query.eq('organization_services.service_type', serviceType);
+      }
+      if (disabilityType) {
+        query = query.eq('organization_disabilities.disability_type', disabilityType);
+      }
+      if (keyword) {
+        query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
+      }
+
+      const { data } = await query;
+      filteredData = data || [];
+    }
     
-    if (filteredData || pinnedData) {
-      const processOrg = (org: Organization): ProcessedOrganization => ({
-        id: org.id,
-        name: org.name,
-        description: org.description,
-        website: org.website,
-        phone: org.phone,
-        email: org.email,
-        zip_code: org.zip_code || '',
-        service_type: org.organization_services[0]?.service_type || 'advocacy',
-        disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
-      });
+    const processOrg = (org: Organization): ProcessedOrganization => ({
+      id: org.id,
+      name: org.name,
+      description: org.description,
+      website: org.website,
+      phone: org.phone,
+      email: org.email,
+      zip_code: org.zip_code || '',
+      service_type: org.organization_services[0]?.service_type || 'advocacy',
+      disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
+    });
 
-      const processedPinnedOrgs = (pinnedData || [])
-        .map(processOrg);
+    const processedPinnedOrgs = pinnedData.map(processOrg);
+    const processedFilteredOrgs = filteredData
+      .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
+      .map(processOrg);
 
-      const processedFilteredOrgs = (filteredData || [])
-        .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
-        .map(processOrg);
-
-      setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
-    } else {
-      setOrganizations([]);
-    }
+    setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
     setHasSearched(true);
-  }, [serviceType, disabilityType, keyword, hiddenOrgs, pinnedOrgs]);
+  }, [serviceType, disabilityType, keyword, hiddenOrgs, pinnedOrgs, hasFilter]);
 
   useEffect(() => {
     handleSearch();

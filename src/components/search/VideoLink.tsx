@@ -9,7 +9,7 @@ export const VideoLink = () => {
         rel="noopener noreferrer"
         className="text-[#044bab] hover:underline font-['Verdana']"
       >
-        Instructional Video
+        Instructions (video)
       </a>
     </div>
   );

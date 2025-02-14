@@ -5,7 +5,7 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-sm font-['Verdana']">
-            © {new Date().getFullYear()} test. All rights reserved.
+            © {new Date().getFullYear()} Disability Related Resources. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex flex-col items-end">
             <a 
