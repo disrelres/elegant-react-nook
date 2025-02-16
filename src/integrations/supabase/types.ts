@@ -18,19 +18,19 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          id?: never
+          id?: number
           organization_id?: string | null
           service_type: Database["public"]["Enums"]["dme_service_type"]
         }
         Update: {
           created_at?: string
-          id?: never
+          id?: number
           organization_id?: string | null
           service_type?: Database["public"]["Enums"]["dme_service_type"]
         }
         Relationships: [
           {
-            foreignKeyName: "dme_services_organization_id_fkey"
+            foreignKeyName: "dme_services_new_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -155,7 +155,7 @@ export type Database = {
         | "hearing_impairment"
         | "cognitive_disability"
         | "chronic_health_conditions"
-      dme_service_type: "sale" | "rent" | "loan" | "repair"
+      dme_service_type: "sell" | "rent" | "loan" | "repair"
       service_type:
         | "advocacy"
         | "employment_support"
