@@ -9,6 +9,35 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      dme_services: {
+        Row: {
+          created_at: string
+          id: number
+          organization_id: string | null
+          service_type: Database["public"]["Enums"]["dme_service_type"]
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          organization_id?: string | null
+          service_type: Database["public"]["Enums"]["dme_service_type"]
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          organization_id?: string | null
+          service_type?: Database["public"]["Enums"]["dme_service_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dme_services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_disabilities: {
         Row: {
           created_at: string
@@ -69,6 +98,8 @@ export type Database = {
           email: string | null
           id: string
           is_national: boolean | null
+          latitude: number | null
+          longitude: number | null
           name: string | null
           phone: string | null
           state: string | null
@@ -83,6 +114,8 @@ export type Database = {
           email?: string | null
           id: string
           is_national?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string | null
           phone?: string | null
           state?: string | null
@@ -97,6 +130,8 @@ export type Database = {
           email?: string | null
           id?: string
           is_national?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string | null
           phone?: string | null
           state?: string | null
@@ -120,6 +155,7 @@ export type Database = {
         | "hearing_impairment"
         | "cognitive_disability"
         | "chronic_health_conditions"
+      dme_service_type: "sale" | "rent" | "loan" | "repair"
       service_type:
         | "advocacy"
         | "employment_support"
