@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatePresence } from "framer-motion";
@@ -20,6 +19,8 @@ export const SearchSection = () => {
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
+  const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
+  const [pinnedOrgs, setPinnedOrgs] = useState<string[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [stats, setStats] = useState({
     zipCodes: 0,
@@ -67,6 +68,19 @@ export const SearchSection = () => {
   }, []);
 
   const handleSearch = useCallback(async () => {
+    let pinnedData: any[] = [];
+    if (pinnedOrgs.length > 0) {
+      const { data: fetchedPinnedData } = await supabase
+        .from('organizations')
+        .select(`
+          *,
+          organization_services!inner(service_type),
+          organization_disabilities!inner(disability_type)
+        `)
+        .in('id', pinnedOrgs);
+      pinnedData = fetchedPinnedData || [];
+    }
+
     let filteredData: any[] = [];
     if (hasFilter) {
       let query = supabase
@@ -104,17 +118,32 @@ export const SearchSection = () => {
       disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment',
     });
 
+    const processedPinnedOrgs = pinnedData.map(processOrg);
     const processedFilteredOrgs = hasFilter
-      ? filteredData.map(processOrg)
+      ? filteredData
+          .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
+          .map(processOrg)
       : [];
 
-    setOrganizations(processedFilteredOrgs);
+    setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
     setHasSearched(true);
-  }, [serviceType, disabilityType, keyword, hasFilter]);
+  }, [serviceType, disabilityType, keyword, hiddenOrgs, pinnedOrgs, hasFilter]);
 
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
+
+  const handleHideOrg = (orgId: string) => {
+    setHiddenOrgs(prev => [...prev, orgId]);
+  };
+
+  const handleTogglePin = (orgId: string) => {
+    setPinnedOrgs(prev => 
+      prev.includes(orgId) 
+        ? prev.filter(id => id !== orgId)
+        : [...prev, orgId]
+    );
+  };
 
   const handleKeywordSearch = (newKeyword: string) => {
     setKeyword(newKeyword);
@@ -175,6 +204,9 @@ export const SearchSection = () => {
             <OrganizationCard
               key={org.id}
               organization={org}
+              isPinned={pinnedOrgs.includes(org.id)}
+              onHide={handleHideOrg}
+              onTogglePin={handleTogglePin}
             />
           ))}
         </AnimatePresence>
