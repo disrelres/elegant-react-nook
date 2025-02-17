@@ -18,7 +18,6 @@ import type { Organization, ProcessedOrganization, ServiceType, DisabilityType }
 export const SearchSection = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
-  const [dmeServiceType, setDMEServiceType] = useState<"sell" | "rent" | "loan" | "repair" | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
   const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
@@ -30,7 +29,7 @@ export const SearchSection = () => {
     totalRecords: 0,
   });
   const [hasSearched, setHasSearched] = useState(false);
-  const hasFilter = serviceType !== "" || disabilityType !== "" || keyword !== "" || dmeServiceType !== "";
+  const hasFilter = serviceType !== "" || disabilityType !== "" || keyword !== "";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,8 +76,7 @@ export const SearchSection = () => {
         .select(`
           *,
           organization_services!inner(service_type),
-          organization_disabilities!inner(disability_type),
-          dme_services(service_type)
+          organization_disabilities!inner(disability_type)
         `)
         .in('id', pinnedOrgs);
       pinnedData = fetchedPinnedData || [];
@@ -91,8 +89,7 @@ export const SearchSection = () => {
         .select(`
           *,
           organization_services!inner(service_type),
-          organization_disabilities!inner(disability_type),
-          dme_services(service_type)
+          organization_disabilities!inner(disability_type)
         `)
         .order('name');
 
@@ -101,9 +98,6 @@ export const SearchSection = () => {
       }
       if (disabilityType) {
         query = query.eq('organization_disabilities.disability_type', disabilityType);
-      }
-      if (dmeServiceType) {
-        query = query.eq('dme_services.service_type', dmeServiceType);
       }
       if (keyword) {
         query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%,city.ilike.%${keyword}%,state.ilike.%${keyword}%,zip_code.ilike.%${keyword}%`);
@@ -134,7 +128,7 @@ export const SearchSection = () => {
 
     setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
     setHasSearched(true);
-  }, [serviceType, disabilityType, dmeServiceType, keyword, hiddenOrgs, pinnedOrgs, hasFilter]);
+  }, [serviceType, disabilityType, keyword, hiddenOrgs, pinnedOrgs, hasFilter]);
 
   useEffect(() => {
     handleSearch();
@@ -181,10 +175,8 @@ export const SearchSection = () => {
       <SearchFilters
         disabilityType={disabilityType}
         serviceType={serviceType}
-        dmeServiceType={dmeServiceType}
         onDisabilityTypeChange={setDisabilityType}
         onServiceTypeChange={setServiceType}
-        onDMEServiceTypeChange={setDMEServiceType}
         onKeywordChange={handleKeywordSearch}
       />
 
