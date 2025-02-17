@@ -1,20 +1,15 @@
 
 import { Link } from "react-router-dom";
+import { Navigation } from "./Navigation";
 
 export const Header = () => {
   return (
-    <header className="w-full bg-white border-b border-gray-200 shadow-[0_4px_6px_-1px_rgba(4,75,171,0.3)]">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <Link to="/" className="text-2xl font-bold text-[#044bab] font-['Verdana']">
-            Disability Related Resources
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-[#044bab] hover:underline font-['Verdana']">
-              Organizations
-            </Link>
-            <Link to="/dme" className="text-[#044bab] hover:underline font-['Verdana']">
-              DME Search
+    <>
+      <header className="w-full bg-white border-b border-gray-200 shadow-[0_4px_6px_-1px_rgba(4,75,171,0.3)]">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <Link to="/" className="text-2xl font-bold text-[#044bab] font-['Verdana']">
+              Disability Related Resources
             </Link>
             <a 
               href="https://buymeacoffee.com/disrelres" 
@@ -26,7 +21,8 @@ export const Header = () => {
             </a>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <Navigation />
+    </>
   );
 };
