@@ -15,18 +15,14 @@ interface SearchFiltersProps {
   onDisabilityTypeChange: (value: DisabilityType | "") => void;
   onServiceTypeChange: (value: ServiceType | "") => void;
   onKeywordChange?: (keyword: string) => void;
-  onDMEServiceTypeChange?: (value: "sell" | "rent" | "loan" | "repair" | "") => void;
-  dmeServiceType?: "sell" | "rent" | "loan" | "repair" | "";
 }
 
 export const SearchFilters = ({
   disabilityType,
   serviceType,
-  dmeServiceType = "",
   onDisabilityTypeChange,
   onServiceTypeChange,
   onKeywordChange,
-  onDMEServiceTypeChange,
 }: SearchFiltersProps) => {
   const [keyword, setKeyword] = useState("");
 
@@ -36,7 +32,7 @@ export const SearchFilters = ({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm mb-8 border border-black">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <select
           className="p-2 border rounded-md font-['Verdana'] text-black"
           value={disabilityType}
@@ -66,18 +62,6 @@ export const SearchFilters = ({
           <option value="assistive_technology">Assistive Technology</option>
           <option value="recreation_social">Recreation & Social</option>
           <option value="legal_services">Legal Services</option>
-        </select>
-
-        <select
-          className="p-2 border rounded-md font-['Verdana'] text-black"
-          value={dmeServiceType}
-          onChange={(e) => onDMEServiceTypeChange?.(e.target.value as "sell" | "rent" | "loan" | "repair" | "")}
-        >
-          <option value="">Select DME Service Type</option>
-          <option value="sell">Sell</option>
-          <option value="rent">Rent</option>
-          <option value="loan">Loan</option>
-          <option value="repair">Repair</option>
         </select>
 
         <div className="flex gap-2">
