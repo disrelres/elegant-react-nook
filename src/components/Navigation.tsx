@@ -22,7 +22,15 @@ export const Navigation = () => {
               ? "text-black font-bold" 
               : "text-[#044bab] hover:underline"}`}
           >
-            DME Search
+            DME Search (Future)
+          </Link>
+          <Link 
+            to="/faq" 
+            className={`font-['Verdana'] ${location.pathname === "/faq" 
+              ? "text-black font-bold" 
+              : "text-[#044bab] hover:underline"}`}
+          >
+            FAQ
           </Link>
         </div>
       </div>
