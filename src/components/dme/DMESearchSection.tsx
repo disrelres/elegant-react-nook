@@ -18,8 +18,6 @@ export const DMESearchSection = () => {
   const [dmeServiceType, setDMEServiceType] = useState<"sell" | "rent" | "loan" | "repair" | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<ProcessedOrganization[]>([]);
-  const [hiddenOrgs, setHiddenOrgs] = useState<string[]>([]);
-  const [pinnedOrgs, setPinnedOrgs] = useState<string[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const hasFilter = dmeServiceType !== "" || keyword !== "";
@@ -38,18 +36,6 @@ export const DMESearchSection = () => {
   };
 
   const handleSearch = useCallback(async () => {
-    let pinnedData: any[] = [];
-    if (pinnedOrgs.length > 0) {
-      const { data: fetchedPinnedData } = await supabase
-        .from('organizations')
-        .select(`
-          *,
-          dme_services!inner(service_type)
-        `)
-        .in('id', pinnedOrgs);
-      pinnedData = fetchedPinnedData || [];
-    }
-
     let filteredData: any[] = [];
     if (hasFilter) {
       let query = supabase
@@ -83,32 +69,17 @@ export const DMESearchSection = () => {
       disability_type: 'mobility_impairment',
     });
 
-    const processedPinnedOrgs = pinnedData.map(processOrg);
     const processedFilteredOrgs = hasFilter
-      ? filteredData
-          .filter(org => !hiddenOrgs.includes(org.id) && !pinnedOrgs.includes(org.id))
-          .map(processOrg)
+      ? filteredData.map(processOrg)
       : [];
 
-    setOrganizations([...processedPinnedOrgs, ...processedFilteredOrgs]);
+    setOrganizations(processedFilteredOrgs);
     setHasSearched(true);
-  }, [dmeServiceType, keyword, hiddenOrgs, pinnedOrgs, hasFilter]);
+  }, [dmeServiceType, keyword, hasFilter]);
 
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
-
-  const handleHideOrg = (orgId: string) => {
-    setHiddenOrgs(prev => [...prev, orgId]);
-  };
-
-  const handleTogglePin = (orgId: string) => {
-    setPinnedOrgs(prev => 
-      prev.includes(orgId) 
-        ? prev.filter(id => id !== orgId)
-        : [...prev, orgId]
-    );
-  };
 
   const handleKeywordSearch = (newKeyword: string) => {
     setKeyword(newKeyword);
@@ -165,9 +136,6 @@ export const DMESearchSection = () => {
             <OrganizationCard
               key={org.id}
               organization={org}
-              isPinned={pinnedOrgs.includes(org.id)}
-              onHide={handleHideOrg}
-              onTogglePin={handleTogglePin}
             />
           ))}
         </AnimatePresence>
