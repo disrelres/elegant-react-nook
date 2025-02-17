@@ -43,7 +43,7 @@ export const DMESearchFilters = ({
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Search by keyword..."
+            placeholder="Search DME providers by name, location..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="flex-1 p-2 border rounded-md font-['Verdana'] text-black"

@@ -84,9 +84,9 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
                 <strong>Tips:</strong>
               </p>
               <ul className="list-disc list-inside text-black font-['Verdana'] space-y-2">
-                <li>Swipe a card left to dismiss it from your current results (Phone only)</li>
-                <li>Click the pin icon on the card to keep it visible across all searches</li>
+                <li>Use the filters above to narrow down your search results</li>
                 <li>Click the speaker icon to have the card's content read aloud</li>
+                <li>Click the download button to save your search results</li>
               </ul>
             </div>
           </motion.div>

@@ -67,7 +67,7 @@ export const SearchFilters = ({
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Search by keyword..."
+            placeholder="Search organizations by name, location..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="flex-1 p-2 border rounded-md font-['Verdana'] text-black"
