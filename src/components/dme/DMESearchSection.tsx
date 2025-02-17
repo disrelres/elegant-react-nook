@@ -44,7 +44,7 @@ export const DMESearchSection = () => {
         .from('organizations')
         .select(`
           *,
-          dme_services!inner(service_type)
+          dme_services(service_type)
         `)
         .in('id', pinnedOrgs);
       pinnedData = fetchedPinnedData || [];
@@ -56,7 +56,7 @@ export const DMESearchSection = () => {
         .from('organizations')
         .select(`
           *,
-          dme_services!inner(service_type)
+          dme_services(service_type)
         `)
         .order('name');
 
@@ -79,7 +79,7 @@ export const DMESearchSection = () => {
       phone: org.phone,
       email: org.email,
       zip_code: org.zip_code || '',
-      service_type: 'assistive_technology',
+      service_type: org.dme_services?.[0]?.service_type || 'sell',
       disability_type: 'mobility_impairment',
     });
 
