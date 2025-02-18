@@ -5,9 +5,10 @@ import { SearchFilters } from "./search/SearchFilters";
 import { SearchResultsHeader } from "./search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
 import { AnimatePresence } from "framer-motion";
+import { DisabilityType, ServiceType, ProcessedOrganization } from "./types/organization";
 
 // Sample initial data - you should replace this with your actual data
-const initialOrganizations = [
+const initialOrganizations: ProcessedOrganization[] = [
   {
     id: "1",
     name: "Sample Organization",
@@ -15,23 +16,24 @@ const initialOrganizations = [
     website: "https://example.com",
     phone: "123-456-7890",
     email: "contact@example.com",
-    disabilityTypes: ["mobility_impairment"],
-    serviceTypes: ["advocacy"]
+    zip_code: "12345",
+    service_type: "advocacy",
+    disability_type: "mobility_impairment"
   }
 ];
 
 export const SearchSection = () => {
-  const [disabilityType, setDisabilityType] = useState<string>("");
-  const [serviceType, setServiceType] = useState<string>("");
+  const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
+  const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [keyword, setKeyword] = useState<string>("");
-  const [organizations, setOrganizations] = useState(initialOrganizations);
+  const [organizations, setOrganizations] = useState<ProcessedOrganization[]>(initialOrganizations);
   const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     setHasSearched(true);
     let filteredOrganizations = initialOrganizations.filter((org) => {
-      const disabilityMatch = disabilityType ? org.disabilityTypes.includes(disabilityType) : true;
-      const serviceMatch = serviceType ? org.serviceTypes.includes(serviceType) : true;
+      const disabilityMatch = disabilityType ? org.disability_type === disabilityType : true;
+      const serviceMatch = serviceType ? org.service_type === serviceType : true;
       const keywordMatch = keyword
         ? org.name.toLowerCase().includes(keyword.toLowerCase()) ||
           org.description.toLowerCase().includes(keyword.toLowerCase())
@@ -54,8 +56,9 @@ export const SearchSection = () => {
       Website: org.website,
       Phone: org.phone,
       Email: org.email,
-      DisabilityTypes: org.disabilityTypes.join(', '),
-      ServiceTypes: org.serviceTypes.join(', '),
+      ServiceType: org.service_type,
+      DisabilityType: org.disability_type,
+      ZipCode: org.zip_code
     }));
 
     const csv = convertArrayToCSV(data);
