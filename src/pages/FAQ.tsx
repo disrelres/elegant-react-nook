@@ -15,7 +15,7 @@ const FAQ = () => {
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-black">
             <h2 className="text-lg font-bold mb-2 text-black font-['Verdana']">Is this tool free?</h2>
-            <p className="text-black font-['Verdana']">Yes. But donations are greatly appreciated because keeping it up is not.</p>
+            <p className="text-black font-['Verdana']">Yes. But donations are greatly appreciated because keeping it up is not free to me.</p>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-sm border border-black">
