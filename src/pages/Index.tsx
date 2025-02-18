@@ -1,20 +1,28 @@
 
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Navigation } from "@/components/Navigation";
-import { VideoLink } from "@/components/VideoLink";
+import { useState } from "react";
+import { DisabilityType, ServiceType } from "@/components/types/organization";
+import { SearchFilters } from "@/components/search/SearchFilters";
 
 const Index = () => {
+  const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
+  const [serviceType, setServiceType] = useState<ServiceType | "">("");
+  const [keyword, setKeyword] = useState("");
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <Header />
-      <VideoLink />
-      <Navigation />
-      <main className="flex-grow">
-        {/* Main content will go here */}
-      </main>
-      <Footer />
-    </div>
+    <main className="flex-grow container mx-auto px-4 py-8">
+      <SearchFilters
+        disabilityType={disabilityType}
+        serviceType={serviceType}
+        onDisabilityTypeChange={setDisabilityType}
+        onServiceTypeChange={setServiceType}
+        onKeywordChange={setKeyword}
+      />
+      {!disabilityType && !serviceType && !keyword && (
+        <div className="text-center font-['Verdana'] text-black">
+          Please select filters or enter a keyword to search for organizations.
+        </div>
+      )}
+    </main>
   );
 };
 
