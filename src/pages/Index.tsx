@@ -2,7 +2,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
-import { SearchSection } from "@/components/SearchSection";
 import { VideoLink } from "@/components/VideoLink";
 
 const Index = () => {
@@ -12,7 +11,7 @@ const Index = () => {
       <VideoLink />
       <Navigation />
       <main className="flex-grow">
-        <SearchSection />
+        {/* Main content will go here */}
       </main>
       <Footer />
     </div>
