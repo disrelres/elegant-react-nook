@@ -2,6 +2,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { VideoLink } from "@/components/VideoLink";
 
 const FAQ = () => {
   return (
