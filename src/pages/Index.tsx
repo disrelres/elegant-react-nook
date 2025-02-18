@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DisabilityType, ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,7 +56,7 @@ const Index = () => {
   };
 
   // Effect to trigger search when filters change
-  useState(() => {
+  useEffect(() => {
     if (disabilityType || serviceType || keyword) {
       searchOrganizations();
     } else {
