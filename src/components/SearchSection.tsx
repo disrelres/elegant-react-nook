@@ -1,10 +1,24 @@
+
 import { useState, useEffect } from "react";
-import { OrganizationCard } from "@/components/OrganizationCard";
-import { SearchFilters } from "@/components/SearchFilters";
-import { SearchResultsHeader } from "@/components/SearchResultsHeader";
-import { initialOrganizations } from "@/data/organizations";
+import { OrganizationCard } from "./search/OrganizationCard";
+import { SearchFilters } from "./search/SearchFilters";
+import { SearchResultsHeader } from "./search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
 import { AnimatePresence } from "framer-motion";
+
+// Sample initial data - you should replace this with your actual data
+const initialOrganizations = [
+  {
+    id: "1",
+    name: "Sample Organization",
+    description: "A sample organization description",
+    website: "https://example.com",
+    phone: "123-456-7890",
+    email: "contact@example.com",
+    disabilityTypes: ["mobility_impairment"],
+    serviceTypes: ["advocacy"]
+  }
+];
 
 export const SearchSection = () => {
   const [disabilityType, setDisabilityType] = useState<string>("");
@@ -37,9 +51,9 @@ export const SearchSection = () => {
     const data = organizations.map(org => ({
       Name: org.name,
       Description: org.description,
-      Address: org.address,
-      Phone: org.phone,
       Website: org.website,
+      Phone: org.phone,
+      Email: org.email,
       DisabilityTypes: org.disabilityTypes.join(', '),
       ServiceTypes: org.serviceTypes.join(', '),
     }));
