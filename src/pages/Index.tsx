@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DisabilityType, ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -35,9 +36,11 @@ const Index = () => {
         query = query.eq('organization_disabilities.disability_type', disabilityType);
       }
 
-      // Apply service type filter
+      // If service type is selected, return no results since no organizations have services
       if (serviceType) {
-        query = query.eq('organization_services.service_type', serviceType);
+        setOrganizations([]);
+        setIsLoading(false);
+        return;
       }
 
       // Apply keyword search
