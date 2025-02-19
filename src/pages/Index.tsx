@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DisabilityType, ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -11,6 +10,7 @@ const Index = () => {
   const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [keyword, setKeyword] = useState("");
+  const [organizationType, setOrganizationType] = useState<"organization" | "program" | "">("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +24,11 @@ const Index = () => {
           organization_disabilities (disability_type),
           organization_services (service_type)
         `);
+
+      // Apply organization type filter
+      if (organizationType) {
+        query = query.eq('organization_type', organizationType);
+      }
 
       // Apply disability type filter
       if (disabilityType) {
@@ -55,14 +60,13 @@ const Index = () => {
     }
   };
 
-  // Effect to trigger search when filters change
   useEffect(() => {
-    if (disabilityType || serviceType || keyword) {
+    if (disabilityType || serviceType || keyword || organizationType) {
       searchOrganizations();
     } else {
       setOrganizations([]);
     }
-  }, [disabilityType, serviceType, keyword]);
+  }, [disabilityType, serviceType, keyword, organizationType]);
 
   const handleDownload = () => {
     const content = organizations.map(org => {
@@ -83,17 +87,20 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">SEARCH</h1>
       <SearchFilters
         disabilityType={disabilityType}
         serviceType={serviceType}
+        organizationType={organizationType}
         onDisabilityTypeChange={setDisabilityType}
         onServiceTypeChange={setServiceType}
+        onOrganizationTypeChange={setOrganizationType}
         onKeywordChange={setKeyword}
       />
       
       {isLoading ? (
         <div className="text-center font-['Verdana'] text-black">Loading...</div>
-      ) : !disabilityType && !serviceType && !keyword ? (
+      ) : !disabilityType && !serviceType && !keyword && !organizationType ? (
         <div className="text-center font-['Verdana'] text-black">
           Please select filters or enter a keyword to search for organizations.
         </div>

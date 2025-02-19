@@ -34,7 +34,7 @@ export const OrganizationCard = ({
   };
 
   return (
-    <Card className="transition-all duration-200 hover:border-[#044bab] hover:border-2 hover:shadow-lg bg-white border border-black flex flex-col md:flex-row md:items-start gap-4">
+    <Card className="bg-white/70 backdrop-blur-md border border-black flex flex-col md:flex-row md:items-start gap-4">
       <CardContent className="flex-grow pt-6">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text">{organization.name}</h3>
