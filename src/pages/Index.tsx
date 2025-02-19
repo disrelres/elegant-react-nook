@@ -36,11 +36,9 @@ const Index = () => {
         query = query.eq('organization_disabilities.disability_type', disabilityType);
       }
 
-      // If service type is selected, return no results since no organizations have services
+      // Apply service type filter
       if (serviceType) {
-        setOrganizations([]);
-        setIsLoading(false);
-        return;
+        query = query.eq('organization_services.service_type', serviceType);
       }
 
       // Apply keyword search
