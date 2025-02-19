@@ -9,7 +9,8 @@ export type ServiceType =
   | "counseling"
   | "assistive_technology"
   | "recreation_social"
-  | "legal_services";
+  | "legal_services"
+  | "finances";
 
 export type DisabilityType = 
   | "mobility_impairment"

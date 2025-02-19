@@ -170,6 +170,7 @@ export type Database = {
         | "assistive_technology"
         | "recreation_social"
         | "legal_services"
+        | "finances"
     }
     CompositeTypes: {
       [_ in never]: never

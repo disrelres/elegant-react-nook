@@ -76,6 +76,7 @@ export const SearchFilters = ({
           <option value="assistive_technology">Assistive Technology</option>
           <option value="recreation_social">Recreation & Social</option>
           <option value="legal_services">Legal Services</option>
+          <option value="finances">Finances</option>
         </select>
 
         <div className="flex gap-2">
