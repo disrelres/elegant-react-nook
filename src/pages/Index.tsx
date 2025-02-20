@@ -11,7 +11,6 @@ import { ArrowUp } from "lucide-react";
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [keyword, setKeyword] = useState("");
-  const [organizationType, setOrganizationType] = useState<"organization" | "program" | "">("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -31,7 +30,8 @@ const Index = () => {
               organization_services (service_type)
             )
           `)
-          .eq('service_type', serviceType);
+          .eq('service_type', serviceType)
+          .eq('organizations.organization_type', 'program');
       } else {
         query = supabase
           .from('organizations')
@@ -39,16 +39,8 @@ const Index = () => {
             *,
             organization_disabilities (disability_type),
             organization_services (service_type)
-          `);
-      }
-
-      // Apply organization type filter
-      if (organizationType) {
-        if (serviceType) {
-          query = query.eq('organizations.organization_type', organizationType);
-        } else {
-          query = query.eq('organization_type', organizationType);
-        }
+          `)
+          .eq('organization_type', 'program');
       }
 
       // Apply keyword search
@@ -63,7 +55,7 @@ const Index = () => {
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching organizations:', error);
+        console.error('Error fetching programs:', error);
         return;
       }
 
@@ -80,12 +72,12 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (serviceType || keyword || organizationType) {
+    if (serviceType || keyword) {
       searchOrganizations();
     } else {
       setOrganizations([]);
     }
-  }, [serviceType, keyword, organizationType]);
+  }, [serviceType, keyword]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -103,7 +95,7 @@ const Index = () => {
   const handleDownload = () => {
     const content = organizations.map(org => {
       return `
-Organization: ${org.name}
+Program: ${org.name}
 Description: ${org.description}
 Website: ${org.website || 'N/A'}
 Phone: ${org.phone || 'N/A'}
@@ -114,29 +106,29 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
     }).join('\n\n');
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'organizations.txt');
+    saveAs(blob, 'programs.txt');
   };
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">SEARCH</h1>
+      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">SEARCH PROGRAMS</h1>
       <SearchFilters
         serviceType={serviceType}
-        organizationType={organizationType}
+        organizationType="program"
         onServiceTypeChange={setServiceType}
-        onOrganizationTypeChange={setOrganizationType}
+        onOrganizationTypeChange={() => {}} // No longer needed since we only have programs
         onKeywordChange={setKeyword}
       />
       
       {isLoading ? (
         <div className="text-center font-['Verdana'] text-black">Loading...</div>
-      ) : !serviceType && !keyword && !organizationType ? (
+      ) : !serviceType && !keyword ? (
         <div className="text-center font-['Verdana'] text-black">
-          Please select filters or enter a keyword to search for organizations.
+          Please select a service type or enter a keyword to search for programs.
         </div>
       ) : organizations.length === 0 ? (
         <div className="text-center font-['Verdana'] text-black">
-          No organizations found matching your search criteria.
+          No programs found matching your search criteria.
         </div>
       ) : (
         <>

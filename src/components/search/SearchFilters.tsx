@@ -19,9 +19,7 @@ interface SearchFiltersProps {
 
 export const SearchFilters = ({
   serviceType,
-  organizationType,
   onServiceTypeChange,
-  onOrganizationTypeChange,
   onKeywordChange,
 }: SearchFiltersProps) => {
   const [keyword, setKeyword] = useState("");
@@ -32,17 +30,7 @@ export const SearchFilters = ({
 
   return (
     <div className="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-sm mb-8 border border-black">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <select
-          className="p-2 border rounded-md font-['Verdana'] text-black"
-          value={organizationType}
-          onChange={(e) => onOrganizationTypeChange(e.target.value as "organization" | "program" | "")}
-        >
-          <option value="">Select Type</option>
-          <option value="organization">Organizations</option>
-          <option value="program">Programs</option>
-        </select>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <select
           className="p-2 border rounded-md font-['Verdana'] text-black"
           value={serviceType}
@@ -65,7 +53,7 @@ export const SearchFilters = ({
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Search by keyword..."
+            placeholder="Search programs by keyword..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="flex-1 p-2 border rounded-md font-['Verdana'] text-black"
@@ -82,7 +70,7 @@ export const SearchFilters = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Search resources</p>
+                <p>Search programs</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
