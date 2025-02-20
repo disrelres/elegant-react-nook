@@ -18,32 +18,55 @@ const Index = () => {
   const searchOrganizations = async () => {
     setIsLoading(true);
     try {
-      let query = supabase
-        .from('organizations')
-        .select(`
-          *,
-          organization_disabilities (disability_type),
-          organization_services (service_type)
-        `);
+      // Start with a base query from organization_services if service type is selected
+      let query;
+      
+      if (serviceType) {
+        query = supabase
+          .from('organization_services')
+          .select(`
+            organizations (
+              *,
+              organization_disabilities (disability_type),
+              organization_services (service_type)
+            )
+          `)
+          .eq('service_type', serviceType);
+      } else {
+        query = supabase
+          .from('organizations')
+          .select(`
+            *,
+            organization_disabilities (disability_type),
+            organization_services (service_type)
+          `);
+      }
 
       // Apply organization type filter
       if (organizationType) {
-        query = query.eq('organization_type', organizationType);
+        if (serviceType) {
+          query = query.eq('organizations.organization_type', organizationType);
+        } else {
+          query = query.eq('organization_type', organizationType);
+        }
       }
 
       // Apply disability type filter
       if (disabilityType) {
-        query = query.contains('organization_disabilities', [{ disability_type: disabilityType }]);
-      }
-
-      // Apply service type filter
-      if (serviceType) {
-        query = query.contains('organization_services', [{ service_type: serviceType }]);
+        if (serviceType) {
+          query = query.contains('organizations.organization_disabilities', [{ disability_type: disabilityType }]);
+        } else {
+          query = query.contains('organization_disabilities', [{ disability_type: disabilityType }]);
+        }
       }
 
       // Apply keyword search
       if (keyword) {
-        query = query.ilike('name', `%${keyword}%`);
+        if (serviceType) {
+          query = query.ilike('organizations.name', `%${keyword}%`);
+        } else {
+          query = query.ilike('name', `%${keyword}%`);
+        }
       }
 
       const { data, error } = await query;
@@ -53,7 +76,12 @@ const Index = () => {
         return;
       }
 
-      setOrganizations(data || []);
+      // Transform the data structure if we queried through organization_services
+      const transformedData = serviceType
+        ? data?.map(item => item.organizations).filter(Boolean)
+        : data;
+
+      setOrganizations(transformedData || []);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -140,4 +168,3 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
 };
 
 export default Index;
-
