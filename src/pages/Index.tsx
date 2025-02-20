@@ -10,6 +10,7 @@ import { ArrowUp } from "lucide-react";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
+  const [organizationType, setOrganizationType] = useState<"organization" | "program">("program");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,7 @@ const Index = () => {
             )
           `)
           .eq('service_type', serviceType)
-          .eq('organizations.organization_type', 'program');
+          .eq('organizations.organization_type', organizationType);
       } else {
         query = supabase
           .from('organizations')
@@ -40,7 +41,7 @@ const Index = () => {
             organization_disabilities (disability_type),
             organization_services (service_type)
           `)
-          .eq('organization_type', 'program');
+          .eq('organization_type', organizationType);
       }
 
       // Apply keyword search
@@ -55,7 +56,7 @@ const Index = () => {
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching programs:', error);
+        console.error('Error fetching organizations:', error);
         return;
       }
 
@@ -72,12 +73,12 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (serviceType || keyword) {
+    if (organizationType) {
       searchOrganizations();
     } else {
       setOrganizations([]);
     }
-  }, [serviceType, keyword]);
+  }, [serviceType, keyword, organizationType]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,40 +96,42 @@ const Index = () => {
   const handleDownload = () => {
     const content = organizations.map(org => {
       return `
-Program: ${org.name}
+${organizationType === 'program' ? 'Program' : 'Organization'}: ${org.name}
 Description: ${org.description}
 Website: ${org.website || 'N/A'}
 Phone: ${org.phone || 'N/A'}
 Email: ${org.email || 'N/A'}
-Location: ${org.city}, ${org.state} ${org.zip_code}
+Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
 -------------------
       `.trim();
     }).join('\n\n');
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'programs.txt');
+    saveAs(blob, `${organizationType}s.txt`);
   };
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">SEARCH PROGRAMS</h1>
+      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">
+        SEARCH {organizationType === 'program' ? 'PROGRAMS' : 'ORGANIZATIONS'}
+      </h1>
       <SearchFilters
         serviceType={serviceType}
-        organizationType="program"
+        organizationType={organizationType}
         onServiceTypeChange={setServiceType}
-        onOrganizationTypeChange={() => {}} // No longer needed since we only have programs
+        onOrganizationTypeChange={setOrganizationType}
         onKeywordChange={setKeyword}
       />
       
       {isLoading ? (
         <div className="text-center font-['Verdana'] text-black">Loading...</div>
-      ) : !serviceType && !keyword ? (
+      ) : !organizationType ? (
         <div className="text-center font-['Verdana'] text-black">
-          Please select a service type or enter a keyword to search for programs.
+          Please select an organization type to view results.
         </div>
       ) : organizations.length === 0 ? (
         <div className="text-center font-['Verdana'] text-black">
-          No programs found matching your search criteria.
+          No {organizationType}s found matching your search criteria.
         </div>
       ) : (
         <>
