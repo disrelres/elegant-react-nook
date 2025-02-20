@@ -1,5 +1,5 @@
 
-import { DisabilityType, ServiceType } from "../types/organization";
+import { ServiceType } from "../types/organization";
 import { useState } from "react";
 import {
   Tooltip,
@@ -10,20 +10,16 @@ import {
 import { Search } from "lucide-react";
 
 interface SearchFiltersProps {
-  disabilityType: DisabilityType | "";
   serviceType: ServiceType | "";
   organizationType: "organization" | "program" | "";
-  onDisabilityTypeChange: (value: DisabilityType | "") => void;
   onServiceTypeChange: (value: ServiceType | "") => void;
   onOrganizationTypeChange: (value: "organization" | "program" | "") => void;
   onKeywordChange?: (keyword: string) => void;
 }
 
 export const SearchFilters = ({
-  disabilityType,
   serviceType,
   organizationType,
-  onDisabilityTypeChange,
   onServiceTypeChange,
   onOrganizationTypeChange,
   onKeywordChange,
@@ -36,7 +32,7 @@ export const SearchFilters = ({
 
   return (
     <div className="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-sm mb-8 border border-black">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <select
           className="p-2 border rounded-md font-['Verdana'] text-black"
           value={organizationType}
@@ -45,19 +41,6 @@ export const SearchFilters = ({
           <option value="">Select Type</option>
           <option value="organization">Organizations</option>
           <option value="program">Programs</option>
-        </select>
-
-        <select
-          className="p-2 border rounded-md font-['Verdana'] text-black"
-          value={disabilityType}
-          onChange={(e) => onDisabilityTypeChange(e.target.value as DisabilityType | "")}
-        >
-          <option value="">Select Disability Type</option>
-          <option value="mobility_impairment">Mobility Impairment</option>
-          <option value="visual_impairment">Visual Impairment</option>
-          <option value="hearing_impairment">Hearing Impairment</option>
-          <option value="cognitive_disability">Cognitive Disability</option>
-          <option value="chronic_health_conditions">Chronic Health Conditions</option>
         </select>
 
         <select

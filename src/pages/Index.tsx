@@ -1,24 +1,24 @@
 
 import { useState, useEffect } from "react";
-import { DisabilityType, ServiceType, Organization } from "@/components/types/organization";
+import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { supabase } from "@/integrations/supabase/client";
 import { OrganizationCard } from "@/components/search/OrganizationCard";
 import { SearchResultsHeader } from "@/components/search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
+import { ArrowUp } from "lucide-react";
 
 const Index = () => {
-  const [disabilityType, setDisabilityType] = useState<DisabilityType | "">("");
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizationType, setOrganizationType] = useState<"organization" | "program" | "">("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const searchOrganizations = async () => {
     setIsLoading(true);
     try {
-      // Start with a base query from organization_services if service type is selected
       let query;
       
       if (serviceType) {
@@ -51,15 +51,6 @@ const Index = () => {
         }
       }
 
-      // Apply disability type filter
-      if (disabilityType) {
-        if (serviceType) {
-          query = query.contains('organizations.organization_disabilities', [{ disability_type: disabilityType }]);
-        } else {
-          query = query.contains('organization_disabilities', [{ disability_type: disabilityType }]);
-        }
-      }
-
       // Apply keyword search
       if (keyword) {
         if (serviceType) {
@@ -76,7 +67,6 @@ const Index = () => {
         return;
       }
 
-      // Transform the data structure if we queried through organization_services
       const transformedData = serviceType
         ? data?.map(item => item.organizations).filter(Boolean)
         : data;
@@ -90,12 +80,25 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (disabilityType || serviceType || keyword || organizationType) {
+    if (serviceType || keyword || organizationType) {
       searchOrganizations();
     } else {
       setOrganizations([]);
     }
-  }, [disabilityType, serviceType, keyword, organizationType]);
+  }, [serviceType, keyword, organizationType]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleDownload = () => {
     const content = organizations.map(org => {
@@ -118,10 +121,8 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
     <main className="flex-grow container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">SEARCH</h1>
       <SearchFilters
-        disabilityType={disabilityType}
         serviceType={serviceType}
         organizationType={organizationType}
-        onDisabilityTypeChange={setDisabilityType}
         onServiceTypeChange={setServiceType}
         onOrganizationTypeChange={setOrganizationType}
         onKeywordChange={setKeyword}
@@ -129,7 +130,7 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
       
       {isLoading ? (
         <div className="text-center font-['Verdana'] text-black">Loading...</div>
-      ) : !disabilityType && !serviceType && !keyword && !organizationType ? (
+      ) : !serviceType && !keyword && !organizationType ? (
         <div className="text-center font-['Verdana'] text-black">
           Please select filters or enter a keyword to search for organizations.
         </div>
@@ -162,6 +163,16 @@ Location: ${org.city}, ${org.state} ${org.zip_code}
             ))}
           </div>
         </>
+      )}
+      
+      {showScrollTop && (
+        <button
+          onClick={handleScrollTop}
+          className="fixed bottom-8 right-8 p-3 bg-white border border-black rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 z-50"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="w-6 h-6 text-[#044bab]" />
+        </button>
       )}
     </main>
   );

@@ -10,6 +10,6 @@
   }
 
   body {
-    @apply bg-[#F6F6F7] text-foreground antialiased;
+    @apply bg-[#F0F0F1] text-foreground antialiased;
   }
 }

@@ -5,9 +5,9 @@ export const Navigation = () => {
   const location = useLocation();
 
   return (
-    <nav className="w-full bg-white border-y border-gray-200 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <nav className="w-full bg-white border-y border-black">
       <div className="container mx-auto px-4 py-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
           <Link 
             to="/" 
             className={`font-['Verdana'] ${location.pathname === "/" 
@@ -16,6 +16,7 @@ export const Navigation = () => {
           >
             Home
           </Link>
+          <span className="mx-2 text-black">|</span>
           <Link 
             to="/about" 
             className={`font-['Verdana'] ${location.pathname === "/about" 
@@ -24,6 +25,7 @@ export const Navigation = () => {
           >
             About
           </Link>
+          <span className="mx-2 text-black">|</span>
           <Link 
             to="/faq" 
             className={`font-['Verdana'] ${location.pathname === "/faq" 
