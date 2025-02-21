@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -111,8 +110,8 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
   };
 
   return (
-    <main className="flex-grow container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">
+    <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
+      <h1 className="text-3xl font-bold mb-8 text-[#044bab] dark:text-blue-400 font-['Verdana']">
         {organizationType 
           ? `SEARCH ${organizationType === 'program' ? 'PROGRAMS' : 'ORGANIZATIONS'}`
           : 'SEARCH RESOURCES'
@@ -127,16 +126,12 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
       />
       
       {isLoading ? (
-        <div className="text-center font-['Verdana'] text-black">Loading...</div>
-      ) : !organizationType ? (
-        <div className="text-center font-['Verdana'] text-black">
-          Please select an organization type to view results.
-        </div>
-      ) : organizations.length === 0 ? (
-        <div className="text-center font-['Verdana'] text-black">
+        <div className="text-center font-['Verdana'] text-black dark:text-white">Loading...</div>
+      ) : organizations.length === 0 && organizationType ? (
+        <div className="text-center font-['Verdana'] text-black dark:text-white">
           No {organizationType}s found matching your search criteria.
         </div>
-      ) : (
+      ) : organizations.length > 0 ? (
         <>
           <SearchResultsHeader 
             resultCount={organizations.length}
@@ -161,15 +156,15 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
             ))}
           </div>
         </>
-      )}
+      ) : null}
       
       {showScrollTop && (
         <button
           onClick={handleScrollTop}
-          className="fixed bottom-8 right-8 p-3 bg-white border border-black rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 z-50"
+          className="fixed bottom-8 right-8 p-3 bg-white dark:bg-gray-700 border border-black dark:border-gray-600 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 z-50"
           aria-label="Scroll to top"
         >
-          <ArrowUp className="w-6 h-6 text-[#044bab]" />
+          <ArrowUp className="w-6 h-6 text-[#044bab] dark:text-blue-400" />
         </button>
       )}
     </main>
