@@ -31,8 +31,11 @@ const Index = () => {
               organization_services (service_type)
             )
           `)
-          .eq('service_type', serviceType)
-          .eq('organizations.organization_type', organizationType);
+          .eq('service_type', serviceType);
+          
+        if (organizationType) {
+          query = query.eq('organizations.organization_type', organizationType);
+        }
 
         if (keyword) {
           query = query.or(`organizations.name.ilike.%${keyword}%,organizations.description.ilike.%${keyword}%`);
@@ -44,8 +47,11 @@ const Index = () => {
             *,
             organization_disabilities (disability_type),
             organization_services (service_type)
-          `)
-          .eq('organization_type', organizationType);
+          `);
+          
+        if (organizationType) {
+          query = query.eq('organization_type', organizationType);
+        }
 
         if (keyword) {
           query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
