@@ -10,7 +10,7 @@ import { ArrowUp } from "lucide-react";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
-  const [organizationType, setOrganizationType] = useState<"organization" | "program">("program");
+  const [organizationType, setOrganizationType] = useState<"organization" | "program" | "">("");
   const [keyword, setKeyword] = useState("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,10 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-[#044bab] font-['Verdana']">
-        SEARCH {organizationType === 'program' ? 'PROGRAMS' : 'ORGANIZATIONS'}
+        {organizationType 
+          ? `SEARCH ${organizationType === 'program' ? 'PROGRAMS' : 'ORGANIZATIONS'}`
+          : 'SEARCH RESOURCES'
+        }
       </h1>
       <SearchFilters
         serviceType={serviceType}
