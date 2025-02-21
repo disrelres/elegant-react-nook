@@ -167,7 +167,7 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
       {showScrollTop && (
         <button
           onClick={handleScrollTop}
-          className="fixed bottom-8 right-8 p-3 bg-white dark:bg-gray-700 border border-black dark:border-gray-600 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 z-50"
+          className="fixed bottom-8 left-8 p-3 bg-white dark:bg-gray-700 border border-black dark:border-gray-600 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 z-50"
           aria-label="Scroll to top"
         >
           <ArrowUp className="w-6 h-6 text-[#044bab] dark:text-blue-400" />
