@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -32,6 +33,10 @@ const Index = () => {
           `)
           .eq('service_type', serviceType)
           .eq('organizations.organization_type', organizationType);
+
+        if (keyword) {
+          query = query.or(`organizations.name.ilike.%${keyword}%,organizations.description.ilike.%${keyword}%`);
+        }
       } else {
         query = supabase
           .from('organizations')
@@ -41,14 +46,9 @@ const Index = () => {
             organization_services (service_type)
           `)
           .eq('organization_type', organizationType);
-      }
 
-      // Apply keyword search
-      if (keyword) {
-        if (serviceType) {
-          query = query.ilike('organizations.name', `%${keyword}%`);
-        } else {
-          query = query.ilike('name', `%${keyword}%`);
+        if (keyword) {
+          query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
         }
       }
 
