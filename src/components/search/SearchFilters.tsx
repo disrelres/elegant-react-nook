@@ -1,4 +1,3 @@
-
 import { ServiceType } from "../types/organization";
 import { useState } from "react";
 import { Search } from "lucide-react";
@@ -47,7 +46,7 @@ export const SearchFilters = ({
                         organizationType === "program"
                           ? "bg-[#044bab] text-white dark:bg-blue-600"
                           : "bg-white dark:bg-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
-                      }`}
+                      } text-center`}
                       onClick={() => onOrganizationTypeChange("program")}
                     >
                       Programs
@@ -68,7 +67,7 @@ export const SearchFilters = ({
                         organizationType === "organization"
                           ? "bg-[#044bab] text-white dark:bg-blue-600"
                           : "bg-white dark:bg-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
-                      }`}
+                      } text-center`}
                       onClick={() => onOrganizationTypeChange("organization")}
                     >
                       Organizations
