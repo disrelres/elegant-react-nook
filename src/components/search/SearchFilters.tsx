@@ -42,7 +42,7 @@ export const SearchFilters = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
-                      className={`w-full py-2 px-8 rounded-md font-['Verdana'] border border-black dark:border-gray-700 transition-colors ${
+                      className={`w-full py-2 rounded-md font-['Verdana'] border border-black dark:border-gray-700 transition-colors ${
                         organizationType === "program"
                           ? "bg-[#044bab] text-white dark:bg-blue-600"
                           : "bg-white dark:bg-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
@@ -63,7 +63,7 @@ export const SearchFilters = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
-                      className={`w-full py-2 px-8 rounded-md font-['Verdana'] border border-black dark:border-gray-700 transition-colors ${
+                      className={`w-full py-2 rounded-md font-['Verdana'] border border-black dark:border-gray-700 transition-colors ${
                         organizationType === "organization"
                           ? "bg-[#044bab] text-white dark:bg-blue-600"
                           : "bg-white dark:bg-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
