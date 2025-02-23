@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -7,6 +6,7 @@ import { OrganizationCard } from "@/components/search/OrganizationCard";
 import { SearchResultsHeader } from "@/components/search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
 import { ArrowUp } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "react-tooltip";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
@@ -165,13 +165,22 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
       ) : null}
       
       {showScrollTop && (
-        <button
-          onClick={handleScrollTop}
-          className="fixed bottom-8 left-8 p-3 bg-white dark:bg-gray-700 border border-black dark:border-gray-600 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 z-50"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp className="w-6 h-6 text-[#044bab] dark:text-blue-400" />
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleScrollTop}
+                className="fixed bottom-8 left-8 p-3 bg-white dark:bg-gray-700 border border-black dark:border-gray-600 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 z-50"
+                aria-label="Scroll to top"
+              >
+                <ArrowUp className="w-6 h-6 text-[#044bab] dark:text-blue-400" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Return to top of page</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </main>
   );
