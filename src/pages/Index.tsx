@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -6,7 +7,12 @@ import { OrganizationCard } from "@/components/search/OrganizationCard";
 import { SearchResultsHeader } from "@/components/search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
 import { ArrowUp } from "lucide-react";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "react-tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
