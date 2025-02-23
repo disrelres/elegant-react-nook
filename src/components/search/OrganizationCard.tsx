@@ -51,7 +51,7 @@ export const OrganizationCard = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Read card content aloud</p>
+                  <p>Listen to organization details</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

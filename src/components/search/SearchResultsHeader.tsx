@@ -46,7 +46,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Toggle visibility of usage tips</p>
+                <p>Toggle helpful usage tips visibility</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -63,7 +63,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Download search results as text file</p>
+                  <p>Save search results as a text file</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

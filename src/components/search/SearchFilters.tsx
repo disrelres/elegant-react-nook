@@ -1,3 +1,4 @@
+
 import { ServiceType } from "../types/organization";
 import { useState } from "react";
 import { Search } from "lucide-react";
@@ -53,7 +54,7 @@ export const SearchFilters = ({
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Search for specific programs</p>
+                    <p>Find specific services and support programs</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -74,7 +75,7 @@ export const SearchFilters = ({
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Search for organizations</p>
+                    <p>Browse organizations providing multiple services</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -107,7 +108,7 @@ export const SearchFilters = ({
                 </select>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Filter by service category</p>
+                <p>Filter results by specific type of service needed</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -127,7 +128,7 @@ export const SearchFilters = ({
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Search by name or description</p>
+                  <p>Search by organization name or description</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -144,7 +145,7 @@ export const SearchFilters = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Click to search</p>
+                  <p>Click to perform search</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
