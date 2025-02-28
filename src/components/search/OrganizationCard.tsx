@@ -37,8 +37,17 @@ export const OrganizationCard = ({
   };
 
   const copyToClipboard = () => {
-    const shareText = `${organization.name} - ${getOrganizationShareUrl()}`;
-    navigator.clipboard.writeText(shareText).then(() => {
+    // Create text representation of the card content
+    const cardContent = `
+Organization: ${organization.name}
+Description: ${organization.description}
+${organization.website ? `Website: ${organization.website}` : ''}
+${organization.phone ? `Phone: ${organization.phone}` : ''}
+${organization.email ? `Email: ${organization.email}` : ''}
+Share Link: ${getOrganizationShareUrl()}
+`.trim();
+
+    navigator.clipboard.writeText(cardContent).then(() => {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     });
@@ -62,13 +71,13 @@ export const OrganizationCard = ({
                   <button
                     onClick={copyToClipboard}
                     className="text-gray-400 hover:text-[#044bab] transition-colors"
-                    aria-label="Copy link to clipboard"
+                    aria-label="Copy card content to clipboard"
                   >
                     <Copy className="w-6 h-6" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Copy link to clipboard</p>
+                  <p>Copy card content to clipboard</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -92,7 +101,7 @@ export const OrganizationCard = ({
             
             {copySuccess && (
               <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-in fade-in slide-in-from-top-2 duration-300 z-50">
-                Link copied to clipboard!
+                Content copied to clipboard!
               </div>
             )}
           </div>
