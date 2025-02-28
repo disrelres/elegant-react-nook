@@ -42,7 +42,7 @@ export const OrganizationCard = ({
   };
 
   const copyToClipboard = () => {
-    const shareText = `${organization.name} - ${window.location.href}`;
+    const shareText = `${organization.name} - ${getOrganizationShareUrl()}`;
     navigator.clipboard.writeText(shareText).then(() => {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
@@ -50,9 +50,16 @@ export const OrganizationCard = ({
     setIsShareMenuOpen(false);
   };
 
+  const getOrganizationShareUrl = () => {
+    // Create a URL with the organization ID as a parameter
+    const url = new URL(window.location.href);
+    url.searchParams.set('org', organization.id);
+    return url.toString();
+  };
+
   const shareVia = (platform: string) => {
     const shareText = `Check out ${organization.name}`;
-    const shareUrl = window.location.href;
+    const shareUrl = getOrganizationShareUrl();
     
     let shareLink = '';
     

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,8 +21,9 @@ const Index = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const focusedOrgRef = useRef<HTMLDivElement>(null);
 
-  const searchOrganizations = async () => {
+  const searchOrganizations = async (orgIdToFocus?: string) => {
     setIsLoading(true);
     try {
       let query;
@@ -62,6 +63,12 @@ const Index = () => {
         if (keyword) {
           query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%`);
         }
+
+        // If we have a specific org ID to find, add it to the query
+        if (orgIdToFocus) {
+          // We still want to search by other criteria, but ensure we include the specific org
+          // We'll filter the results afterward
+        }
       }
 
       const { data, error } = await query;
@@ -76,6 +83,21 @@ const Index = () => {
         : data;
 
       setOrganizations(transformedData || []);
+
+      // If we have an organization to focus on, scroll to it
+      if (orgIdToFocus) {
+        setTimeout(() => {
+          if (focusedOrgRef.current) {
+            focusedOrgRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            focusedOrgRef.current.setAttribute('data-highlighted', 'true');
+            setTimeout(() => {
+              if (focusedOrgRef.current) {
+                focusedOrgRef.current.classList.add('highlight-animation');
+              }
+            }, 500);
+          }
+        }, 500);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -84,8 +106,17 @@ const Index = () => {
   };
 
   useEffect(() => {
+    // Check if there's an org parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const orgId = urlParams.get('org');
+    
+    // If there's an org parameter, set the default organization type to ensure we search
+    if (orgId && !organizationType) {
+      setOrganizationType('organization');
+    }
+    
     if (organizationType) {
-      searchOrganizations();
+      searchOrganizations(orgId || undefined);
     } else {
       setOrganizations([]);
     }
@@ -121,6 +152,10 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
     saveAs(blob, `${organizationType}s.txt`);
   };
 
+  // Get the org ID from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const highlightedOrgId = urlParams.get('org');
+
   return (
     <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
       <h1 className="text-3xl font-bold mb-8 text-[#044bab] dark:text-blue-400 font-['Verdana']">
@@ -151,20 +186,25 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
           />
           <div className="grid gap-6">
             {organizations.map((org) => (
-              <OrganizationCard
+              <div
                 key={org.id}
-                organization={{
-                  id: org.id,
-                  name: org.name || '',
-                  description: org.description || '',
-                  website: org.website,
-                  phone: org.phone,
-                  email: org.email,
-                  zip_code: org.zip_code,
-                  service_type: org.organization_services[0]?.service_type || 'advocacy',
-                  disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment'
-                }}
-              />
+                ref={org.id === highlightedOrgId ? focusedOrgRef : undefined}
+                className={`transition-all duration-500 ${org.id === highlightedOrgId ? 'ring-2 ring-[#044bab] ring-offset-2' : ''}`}
+              >
+                <OrganizationCard
+                  organization={{
+                    id: org.id,
+                    name: org.name || '',
+                    description: org.description || '',
+                    website: org.website,
+                    phone: org.phone,
+                    email: org.email,
+                    zip_code: org.zip_code,
+                    service_type: org.organization_services[0]?.service_type || 'advocacy',
+                    disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment'
+                  }}
+                />
+              </div>
             ))}
           </div>
         </>
