@@ -12,8 +12,7 @@ interface SearchResultsProps {
 export const SearchResults = ({ organizations }: SearchResultsProps) => {
   const handleDownload = () => {
     const content = organizations.map(org => {
-      // The organization_type property doesn't exist in the Organization type
-      // Let's use a different approach based on the available properties
+      // Use is_national to determine organization type instead of organization_type
       const orgType = org.is_national ? 'National Organization' : 'Local Organization';
       return `
 ${orgType}: ${org.name}

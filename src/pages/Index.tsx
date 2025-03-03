@@ -23,7 +23,6 @@ const Index = () => {
   const { showScrollTop } = useScrollTop();
 
   // Effect to trigger search when filters change
-  // Fixed: Using useEffect instead of useState for this side effect
   useEffect(() => {
     if (organizationType) {
       searchOrganizations();
