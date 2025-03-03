@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ServiceType } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -23,7 +23,8 @@ const Index = () => {
   const { showScrollTop } = useScrollTop();
 
   // Effect to trigger search when filters change
-  useState(() => {
+  // Fixed: Using useEffect instead of useState for this side effect
+  useEffect(() => {
     if (organizationType) {
       searchOrganizations();
     }
