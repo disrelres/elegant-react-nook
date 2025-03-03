@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -22,6 +21,16 @@ const Index = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    console.log("Current state:", { 
+      serviceType, 
+      organizationType, 
+      keyword, 
+      organizations: organizations.length, 
+      isLoading 
+    });
+  }, [serviceType, organizationType, keyword, organizations, isLoading]);
 
   const searchOrganizations = async () => {
     setIsLoading(true);
@@ -122,6 +131,12 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
     saveAs(blob, `${organizationType}s.txt`);
   };
 
+  console.log("Rendering Index component with:", {
+    organizationType,
+    organizations: organizations.length,
+    isLoading
+  });
+
   return (
     <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
       <h1 className="text-3xl font-bold mb-8 text-[#044bab] dark:text-blue-400 font-['Verdana']">
@@ -148,10 +163,6 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
       
       {isLoading ? (
         <div className="text-center font-['Verdana'] text-black dark:text-white">Loading...</div>
-      ) : organizations.length === 0 && organizationType ? (
-        <div className="text-center font-['Verdana'] text-black dark:text-white">
-          No {organizationType}s found matching your search criteria.
-        </div>
       ) : organizations.length > 0 ? (
         <>
           <SearchResultsHeader 
@@ -170,14 +181,14 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
                   phone: org.phone,
                   email: org.email,
                   zip_code: org.zip_code,
-                  service_type: org.organization_services[0]?.service_type || 'advocacy',
-                  disability_type: org.organization_disabilities[0]?.disability_type || 'mobility_impairment'
+                  service_type: org.organization_services?.[0]?.service_type || 'advocacy',
+                  disability_type: org.organization_disabilities?.[0]?.disability_type || 'mobility_impairment'
                 }}
               />
             ))}
           </div>
         </>
-      ) : !organizationType ? (
+      ) : (
         <div className="mt-10 p-6 text-center border-2 border-dashed border-[#044bab] rounded-lg">
           <p className="text-xl font-['Verdana'] text-black dark:text-white mb-2">
             Welcome to the Resource Search Tool
@@ -186,7 +197,7 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
             Please select either "Programs" or "Organizations" above to start searching for resources.
           </p>
         </div>
-      ) : null}
+      )}
       
       {showScrollTop && (
         <TooltipProvider>
