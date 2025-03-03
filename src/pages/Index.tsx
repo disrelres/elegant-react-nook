@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ServiceType, Organization } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -21,6 +22,7 @@ const Index = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     console.log("Current state:", { 
@@ -28,12 +30,15 @@ const Index = () => {
       organizationType, 
       keyword, 
       organizations: organizations.length, 
-      isLoading 
+      isLoading,
+      hasSearched
     });
-  }, [serviceType, organizationType, keyword, organizations, isLoading]);
+  }, [serviceType, organizationType, keyword, organizations, isLoading, hasSearched]);
 
   const searchOrganizations = async () => {
     setIsLoading(true);
+    setHasSearched(true);
+    
     try {
       let query;
       
@@ -81,10 +86,13 @@ const Index = () => {
         return;
       }
 
+      console.log("Raw data from query:", data);
+
       const transformedData = serviceType
         ? data?.map(item => item.organizations).filter(Boolean)
         : data;
 
+      console.log("Transformed data:", transformedData);
       setOrganizations(transformedData || []);
     } catch (error) {
       console.error('Error:', error);
@@ -98,6 +106,7 @@ const Index = () => {
       searchOrganizations();
     } else {
       setOrganizations([]);
+      setHasSearched(false);
     }
   }, [serviceType, keyword, organizationType]);
 
@@ -134,8 +143,18 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
   console.log("Rendering Index component with:", {
     organizationType,
     organizations: organizations.length,
-    isLoading
+    isLoading,
+    hasSearched
   });
+
+  // Force render the welcome message when no organization type is selected
+  const renderWelcomeMessage = !organizationType;
+  
+  // Force render search results when organizations are found
+  const renderResults = organizations.length > 0;
+  
+  // Show "no results" message when a search has been performed but no results found
+  const renderNoResults = hasSearched && organizationType && organizations.length === 0 && !isLoading;
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
@@ -161,9 +180,11 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
         onKeywordChange={setKeyword}
       />
       
-      {isLoading ? (
+      {isLoading && (
         <div className="text-center font-['Verdana'] text-black dark:text-white">Loading...</div>
-      ) : organizations.length > 0 ? (
+      )}
+      
+      {renderResults && !isLoading && (
         <>
           <SearchResultsHeader 
             resultCount={organizations.length}
@@ -188,7 +209,15 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
             ))}
           </div>
         </>
-      ) : (
+      )}
+      
+      {renderNoResults && (
+        <div className="text-center font-['Verdana'] text-black dark:text-white mt-10">
+          No {organizationType}s found matching your search criteria.
+        </div>
+      )}
+      
+      {renderWelcomeMessage && (
         <div className="mt-10 p-6 text-center border-2 border-dashed border-[#044bab] rounded-lg">
           <p className="text-xl font-['Verdana'] text-black dark:text-white mb-2">
             Welcome to the Resource Search Tool
