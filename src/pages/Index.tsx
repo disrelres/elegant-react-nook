@@ -6,13 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { OrganizationCard } from "@/components/search/OrganizationCard";
 import { SearchResultsHeader } from "@/components/search/SearchResultsHeader";
 import { saveAs } from 'file-saver';
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
@@ -129,6 +130,14 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
           : 'SEARCH RESOURCES'
         }
       </h1>
+      
+      <Alert className="mb-6 border-[#044bab] bg-blue-50 dark:bg-blue-900/20">
+        <Info className="h-5 w-5 text-[#044bab]" />
+        <AlertDescription className="text-black dark:text-white font-['Verdana']">
+          To begin your search, select either <strong>Programs</strong> or <strong>Organizations</strong> from the options below.
+        </AlertDescription>
+      </Alert>
+      
       <SearchFilters
         serviceType={serviceType}
         organizationType={organizationType}
@@ -168,6 +177,15 @@ Location: ${org.city ? `${org.city}, ${org.state} ${org.zip_code}` : 'National'}
             ))}
           </div>
         </>
+      ) : !organizationType ? (
+        <div className="mt-10 p-6 text-center border-2 border-dashed border-[#044bab] rounded-lg">
+          <p className="text-xl font-['Verdana'] text-black dark:text-white mb-2">
+            Welcome to the Resource Search Tool
+          </p>
+          <p className="font-['Verdana'] text-black dark:text-white">
+            Please select either "Programs" or "Organizations" above to start searching for resources.
+          </p>
+        </div>
       ) : null}
       
       {showScrollTop && (
