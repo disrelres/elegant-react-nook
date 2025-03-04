@@ -1,7 +1,7 @@
 
-import { useState, useCallback } from 'react';
-import { ServiceType, Organization } from '@/components/types/organization';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from "react";
+import { Organization, ServiceType } from "@/components/types/organization";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useOrganizationSearch = (
   serviceType: ServiceType | "",
@@ -12,16 +12,9 @@ export const useOrganizationSearch = (
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const searchOrganizations = useCallback(async () => {
-    if (!organizationType) {
-      setOrganizations([]);
-      setHasSearched(false);
-      return;
-    }
-
+  const searchOrganizations = async (orgIdToFocus?: string) => {
     setIsLoading(true);
     setHasSearched(true);
-    
     try {
       let query;
       
@@ -79,12 +72,27 @@ export const useOrganizationSearch = (
     } finally {
       setIsLoading(false);
     }
-  }, [serviceType, organizationType, keyword]);
-
-  return {
-    organizations,
-    isLoading,
-    hasSearched,
-    searchOrganizations
   };
+
+  useEffect(() => {
+    // Check if there's an org parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const orgId = urlParams.get('org');
+    
+    // If there's an org parameter, set the default organization type to ensure we search
+    if (orgId && !organizationType) {
+      // In this hook we can't set organizationType directly
+      // This is handled in the parent component
+      console.log("Found org ID in URL:", orgId);
+    }
+    
+    if (organizationType) {
+      searchOrganizations(orgId || undefined);
+    } else {
+      setOrganizations([]);
+      setHasSearched(false);
+    }
+  }, [serviceType, keyword, organizationType]);
+
+  return { organizations, isLoading, hasSearched };
 };

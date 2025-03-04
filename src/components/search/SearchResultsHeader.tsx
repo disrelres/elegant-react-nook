@@ -85,7 +85,6 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
               </p>
               <ul className="list-disc list-inside text-black font-['Verdana'] space-y-2">
                 <li>Click the speaker icon to have the card's content read aloud</li>
-                <li>Click the copy icon to copy the organization's details to your clipboard</li>
               </ul>
             </div>
           </motion.div>

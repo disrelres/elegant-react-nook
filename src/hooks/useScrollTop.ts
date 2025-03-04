@@ -1,17 +1,21 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-export const useScrollTop = (threshold = 300) => {
+export const useScrollTop = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > threshold);
+      setShowScrollTop(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [threshold]);
+  }, []);
 
-  return { showScrollTop };
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return { showScrollTop, handleScrollTop };
 };

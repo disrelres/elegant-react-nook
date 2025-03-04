@@ -1,6 +1,7 @@
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2 } from "lucide-react";
+import { Volume2, Copy } from "lucide-react";
 import { ProcessedOrganization } from "../types/organization";
 import {
   Tooltip,
@@ -8,7 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
 
 interface OrganizationCardProps {
   organization: ProcessedOrganization;
@@ -17,6 +17,8 @@ interface OrganizationCardProps {
 export const OrganizationCard = ({
   organization,
 }: OrganizationCardProps) => {
+  const [copySuccess, setCopySuccess] = useState(false);
+
   const speakContent = () => {
     const speech = new SpeechSynthesisUtterance();
     speech.text = `Organization: ${organization.name}. 
@@ -34,33 +36,78 @@ export const OrganizationCard = ({
     return phone.replace(/[^\d]/g, '');
   };
 
+  const copyToClipboard = () => {
+    // Create text representation of the card content
+    const cardContent = `
+Organization: ${organization.name}
+Description: ${organization.description}
+${organization.website ? `Website: ${organization.website}` : ''}
+${organization.phone ? `Phone: ${organization.phone}` : ''}
+${organization.email ? `Email: ${organization.email}` : ''}
+Share Link: ${getOrganizationShareUrl()}
+`.trim();
+
+    navigator.clipboard.writeText(cardContent).then(() => {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    });
+  };
+
+  const getOrganizationShareUrl = () => {
+    // Create a URL with the organization ID as a parameter
+    const url = new URL(window.location.href);
+    url.searchParams.set('org', organization.id);
+    return url.toString();
+  };
+
   return (
     <Card className="w-full bg-white/70 backdrop-blur-md border border-black">
       <CardContent className="flex-grow pt-6">
         <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={speakContent}
-                      className="text-gray-400 hover:text-[#044bab] transition-colors"
-                      aria-label="Read content aloud"
-                    >
-                      <Volume2 className="w-6 h-6" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Listen to organization details</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text">{organization.name}</h3>
+          <div className="flex gap-2 mr-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={copyToClipboard}
+                    className="text-gray-400 hover:text-[#044bab] transition-colors"
+                    aria-label="Copy card content to clipboard"
+                  >
+                    <Copy className="w-6 h-6" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Copy card content to clipboard</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={speakContent}
+                    className="text-gray-400 hover:text-[#044bab] transition-colors"
+                    aria-label="Read content aloud"
+                  >
+                    <Volume2 className="w-6 h-6" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Listen to organization details</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            {copySuccess && (
+              <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-in fade-in slide-in-from-top-2 duration-300 z-50">
+                Content copied to clipboard!
+              </div>
+            )}
           </div>
+          
+          <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text flex-1">{organization.name}</h3>
         </div>
-        
         <p className="text-black font-['Verdana'] select-text mb-4">{organization.description}</p>
         {organization.website && (
           <p className="text-sm mb-2 font-['Verdana'] select-text">

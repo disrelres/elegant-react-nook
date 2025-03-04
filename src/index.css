@@ -13,3 +13,23 @@
     @apply bg-[#F0F0F1] text-foreground antialiased;
   }
 }
+
+@layer utilities {
+  .share-button-appear {
+    animation: share-button-appear 0.3s forwards;
+  }
+  
+  @keyframes share-button-appear {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    70% {
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

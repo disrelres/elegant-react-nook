@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { ArrowUp } from 'lucide-react';
+import React from "react";
+import { ArrowUp } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -9,16 +9,13 @@ import {
 } from "@/components/ui/tooltip";
 
 interface ScrollToTopButtonProps {
-  visible: boolean;
+  showScrollTop: boolean;
+  handleScrollTop: () => void;
 }
 
-export const ScrollToTopButton = ({ visible }: ScrollToTopButtonProps) => {
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (!visible) return null;
-
+const ScrollToTopButton = ({ showScrollTop, handleScrollTop }: ScrollToTopButtonProps) => {
+  if (!showScrollTop) return null;
+  
   return (
     <TooltipProvider>
       <Tooltip>
@@ -38,3 +35,5 @@ export const ScrollToTopButton = ({ visible }: ScrollToTopButtonProps) => {
     </TooltipProvider>
   );
 };
+
+export default ScrollToTopButton;
