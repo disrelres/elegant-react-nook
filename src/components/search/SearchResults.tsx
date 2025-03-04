@@ -16,7 +16,7 @@ export const SearchResults = ({ organizations }: SearchResultsProps) => {
       const orgType = org.is_national ? 'National Organization' : 'Local Organization';
       return `
 ${orgType}: ${org.name}
-Description: ${org.description}
+Description: ${org.description || 'N/A'}
 Website: ${org.website || 'N/A'}
 Phone: ${org.phone || 'N/A'}
 Email: ${org.email || 'N/A'}
