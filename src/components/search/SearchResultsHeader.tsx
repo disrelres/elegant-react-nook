@@ -46,7 +46,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Toggle visibility of usage tips</p>
+                <p>Toggle helpful usage tips visibility</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -63,7 +63,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Download search results as text file</p>
+                  <p>Save search results as a text file</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -85,6 +85,7 @@ export const SearchResultsHeader = ({ resultCount, onDownload }: SearchResultsHe
               </p>
               <ul className="list-disc list-inside text-black font-['Verdana'] space-y-2">
                 <li>Click the speaker icon to have the card's content read aloud</li>
+                <li>Click the copy icon to copy the organization's details to your clipboard</li>
               </ul>
             </div>
           </motion.div>
