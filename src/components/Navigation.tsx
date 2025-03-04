@@ -5,9 +5,7 @@ export const Navigation = () => {
   const location = useLocation();
 
   return (
-    <nav className="w-full bg-white border-y border-black dark:bg-gray-800 dark:border-gray-700 relative">
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#044bab] to-transparent opacity-75 animate-pulse"></div>
-      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#044bab] to-transparent opacity-75 animate-pulse"></div>
+    <nav className="w-full bg-white border-y border-black dark:bg-gray-800 dark:border-gray-700">
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center">
           <Link 

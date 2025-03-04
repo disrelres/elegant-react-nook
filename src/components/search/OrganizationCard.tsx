@@ -8,7 +8,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
 
 interface OrganizationCardProps {
   organization: ProcessedOrganization;
@@ -35,32 +34,29 @@ export const OrganizationCard = ({
   };
 
   return (
-    <Card className="w-full bg-white/70 backdrop-blur-md border border-black">
+    <Card className="bg-white/70 backdrop-blur-md border border-black flex flex-col md:flex-row md:items-start gap-4">
       <CardContent className="flex-grow pt-6">
         <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={speakContent}
-                      className="text-gray-400 hover:text-[#044bab] transition-colors"
-                      aria-label="Read content aloud"
-                    >
-                      <Volume2 className="w-6 h-6" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Listen to organization details</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text">{organization.name}</h3>
+          <h3 className="text-xl font-semibold text-[#044bab] font-['Verdana'] select-text">{organization.name}</h3>
+          <div className="flex gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={speakContent}
+                    className="text-gray-400 hover:text-[#044bab] transition-colors"
+                    aria-label="Read content aloud"
+                  >
+                    <Volume2 className="w-6 h-6" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Read card content aloud</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
-        
         <p className="text-black font-['Verdana'] select-text mb-4">{organization.description}</p>
         {organization.website && (
           <p className="text-sm mb-2 font-['Verdana'] select-text">
