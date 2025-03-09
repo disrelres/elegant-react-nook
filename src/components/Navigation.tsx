@@ -20,6 +20,15 @@ export const Navigation = () => {
           </Link>
           <span className="mx-2 text-black dark:text-white">|</span>
           <Link 
+            to="/features" 
+            className={`font-['Verdana'] ${location.pathname === "/features" 
+              ? "text-black dark:text-white font-bold" 
+              : "text-[#044bab] dark:text-blue-300 hover:underline"}`}
+          >
+            Features
+          </Link>
+          <span className="mx-2 text-black dark:text-white">|</span>
+          <Link 
             to="/about" 
             className={`font-['Verdana'] ${location.pathname === "/about" 
               ? "text-black dark:text-white font-bold" 

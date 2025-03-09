@@ -9,6 +9,7 @@ import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import ClonedSearch from "./pages/ClonedSearch";
 import Icosahedron from "./pages/Icosahedron";
+import FeatureOverview from "./pages/FeatureOverview";
 
 const App = () => (
   <Router>
@@ -22,6 +23,7 @@ const App = () => (
         <Route path="/faq" element={<FAQ />} />
         <Route path="/cloned-search" element={<ClonedSearch />} />
         <Route path="/icosahedron" element={<Icosahedron />} />
+        <Route path="/features" element={<FeatureOverview />} />
       </Routes>
       <Footer />
     </div>
