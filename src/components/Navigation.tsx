@@ -36,6 +36,15 @@ export const Navigation = () => {
           >
             FAQ
           </Link>
+          <span className="mx-2 text-black dark:text-white">|</span>
+          <Link 
+            to="/icosahedron" 
+            className={`font-['Verdana'] ${location.pathname === "/icosahedron" 
+              ? "text-black dark:text-white font-bold" 
+              : "text-[#044bab] dark:text-blue-300 hover:underline"}`}
+          >
+            Icosahedron
+          </Link>
         </div>
       </div>
     </nav>

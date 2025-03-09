@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import ClonedSearch from "./pages/ClonedSearch";
+import Icosahedron from "./pages/Icosahedron";
 
 const App = () => (
   <Router>
@@ -20,6 +21,7 @@ const App = () => (
         <Route path="/about" element={<About />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/cloned-search" element={<ClonedSearch />} />
+        <Route path="/icosahedron" element={<Icosahedron />} />
       </Routes>
       <Footer />
     </div>
