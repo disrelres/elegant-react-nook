@@ -10,6 +10,8 @@ import FAQ from "./pages/FAQ";
 import ClonedSearch from "./pages/ClonedSearch";
 import Icosahedron from "./pages/Icosahedron";
 import FeatureOverview from "./pages/FeatureOverview";
+import DiceRoller from "./pages/DiceRoller";
+import DiceSettings from "./pages/DiceSettings";
 
 const App = () => (
   <Router>
@@ -24,6 +26,8 @@ const App = () => (
         <Route path="/cloned-search" element={<ClonedSearch />} />
         <Route path="/icosahedron" element={<Icosahedron />} />
         <Route path="/features" element={<FeatureOverview />} />
+        <Route path="/dice-roller" element={<DiceRoller />} />
+        <Route path="/dice-settings" element={<DiceSettings />} />
       </Routes>
       <Footer />
     </div>
