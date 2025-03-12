@@ -39,7 +39,7 @@ const DiceSettings = () => {
               Back
             </Link>
           </Button>
-          <h1 className="text-2xl font-bold text-[#044bab] dark:text-blue-400 font-['Verdana']">
+          <h1 className="text-2xl font-bold text-[#ea384c] dark:text-red-400 font-['Verdana']">
             Dice Settings
           </h1>
         </div>
