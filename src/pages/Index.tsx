@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ServiceType } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -28,7 +27,7 @@ const Index = () => {
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
-      <h1 className="text-3xl font-bold mb-8 text-[#ea384c] dark:text-red-400 font-['Verdana']">
+      <h1 className="text-3xl font-bold mb-8 text-[#044bab] dark:text-blue-400 font-['Verdana']">
         {organizationType 
           ? `SEARCH ${organizationType === 'program' ? 'PROGRAMS' : 'ORGANIZATIONS'}`
           : 'SEARCH RESOURCES'

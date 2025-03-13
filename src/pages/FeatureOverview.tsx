@@ -71,13 +71,13 @@ const FeatureOverview = () => {
         className={`max-w-3xl mx-auto transition-opacity duration-700 ${visible ? 'opacity-100' : 'opacity-0'}`}
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-[#ea384c] dark:text-red-400 font-['Verdana']">
+          <h1 className="text-4xl font-bold mb-4 text-[#044bab] dark:text-blue-400 font-['Verdana']">
             Virtual Dice Roller
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 font-['Verdana']">
             A powerful and customizable dice rolling application for all your gaming needs
           </p>
-          <Separator className="my-8 bg-[#ea384c] dark:bg-red-800 opacity-20" />
+          <Separator className="my-8 bg-[#044bab] dark:bg-blue-800 opacity-20" />
         </div>
 
         <div className="mb-12">
