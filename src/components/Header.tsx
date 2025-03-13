@@ -6,7 +6,7 @@ export const Header = () => {
     <header className="w-full bg-white border-b border-black">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold text-[#044bab] font-['Verdana']">
+          <Link to="/" className="text-2xl font-bold text-green-600 dark:text-green-400 font-['Verdana']">
             Disability Related Resources
           </Link>
           <div className="flex items-center space-x-6">
