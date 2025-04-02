@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ServiceType } from "@/components/types/organization";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -7,11 +8,13 @@ import SearchResults from "@/components/search/SearchResults";
 import ScrollToTopButton from "@/components/search/ScrollToTopButton";
 import { useOrganizationSearch } from "@/hooks/useOrganizationSearch";
 import { useScrollTop } from "@/hooks/useScrollTop";
+import { AddTERIOrganization } from "@/components/admin/AddTERIOrganization";
 
 const Index = () => {
   const [serviceType, setServiceType] = useState<ServiceType | "">("");
   const [organizationType, setOrganizationType] = useState<"organization" | "program" | "">("");
   const [keyword, setKeyword] = useState("");
+  const [showAdmin, setShowAdmin] = useState(false);
   
   const { organizations, isLoading, hasSearched } = useOrganizationSearch(
     serviceType,
@@ -24,6 +27,12 @@ const Index = () => {
   // Get the org ID from URL params
   const urlParams = new URLSearchParams(window.location.search);
   const highlightedOrgId = urlParams.get('org');
+  const adminParam = urlParams.get('admin');
+
+  // Show admin panel if admin=true in URL
+  if (adminParam === 'true' && !showAdmin) {
+    setShowAdmin(true);
+  }
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8 dark:bg-gray-900">
@@ -33,6 +42,12 @@ const Index = () => {
           : 'SEARCH RESOURCES'
         }
       </h1>
+      
+      {showAdmin && (
+        <div className="mb-8">
+          <AddTERIOrganization />
+        </div>
+      )}
       
       <SearchFilters
         serviceType={serviceType}
