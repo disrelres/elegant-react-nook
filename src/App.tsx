@@ -12,6 +12,7 @@ import Icosahedron from "./pages/Icosahedron";
 import FeatureOverview from "./pages/FeatureOverview";
 import DiceRoller from "./pages/DiceRoller";
 import DiceSettings from "./pages/DiceSettings";
+import GolfHub from "./pages/GolfHub";
 
 const App = () => (
   <Router>
@@ -28,6 +29,7 @@ const App = () => (
         <Route path="/features" element={<FeatureOverview />} />
         <Route path="/dice-roller" element={<DiceRoller />} />
         <Route path="/dice-settings" element={<DiceSettings />} />
+        <Route path="/golf-hub" element={<GolfHub />} />
       </Routes>
       <Footer />
     </div>
