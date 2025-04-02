@@ -37,7 +37,7 @@ export const AddTERIOrganization = () => {
         .insert({
           id: orgId,
           name: 'TERI Road',
-          description: 'TERI Road's Independent Navigation and Driving Services program (INDS) provides assessment, training, and support services for individuals with disabilities to become independent community navigators and potential drivers.',
+          description: "TERI Road's Independent Navigation and Driving Services program (INDS) provides assessment, training, and support services for individuals with disabilities to become independent community navigators and potential drivers.",
           website: 'https://teriroad.org/inds',
           phone: '(760) 721-1706',
           email: 'info@teriinc.org',
