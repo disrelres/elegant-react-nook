@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, AlertCircle } from "lucide-react";
+import type { Database } from "@/integrations/supabase/types";
+
+// Define types based on the database schema
+type ServiceType = Database["public"]["Enums"]["service_type"];
+type DisabilityType = Database["public"]["Enums"]["disability_type"];
 
 export const AddTERIOrganization = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,8 +57,8 @@ export const AddTERIOrganization = () => {
         throw new Error(`Failed to insert organization: ${insertError.message}`);
       }
 
-      // Associate with services
-      const serviceTypes = [
+      // Associate with services - using properly typed service types
+      const serviceTypes: ServiceType[] = [
         'transportation',
         'education_training',
         'assistive_technology'
@@ -72,8 +77,8 @@ export const AddTERIOrganization = () => {
         }
       }
 
-      // Associate with disability types
-      const disabilityTypes = [
+      // Associate with disability types - using properly typed disability types
+      const disabilityTypes: DisabilityType[] = [
         'cognitive_disability',
         'mobility_impairment'
       ];
